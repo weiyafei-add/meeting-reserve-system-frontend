@@ -3,17 +3,32 @@ export const routes = [
     path: "/",
     routes: [
       { path: "/", name: "欢迎", component: "index" },
-      { path: "/docs", name: "文档", component: "docs" },
       { path: "/login", component: "@/pages/Login" },
-      { path: "/room", name: "会议室", component: "@/pages/Room" },
       {
-        path: "/meetingManager",
+        path: "/meetingroom-manager",
         name: "会议室管理",
         routes: [
           {
-            path: "/meetingManager/reserve",
-            name: "预定",
-            component: "docs",
+            path: "/meetingroom-manager/roomlist",
+            name: "会议室列表",
+            component: "@/pages/meetingroom-manager/roomlist",
+          },
+          {
+            path: "/meetingroom-manager/reserve",
+            name: "预定会议室",
+            component: "@/pages/meetingroom-manager/reserve",
+          },
+        ],
+      },
+      { path: "/room", name: "在线会议室", component: "@/pages/Room" },
+      {
+        path: "/user",
+        name: "用户管理",
+        routes: [
+          {
+            path: "/user/manager",
+            name: "用户列表",
+            component: "@/pages/User",
           },
         ],
       },

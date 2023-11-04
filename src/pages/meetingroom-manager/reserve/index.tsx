@@ -1,4 +1,4 @@
-const DocsPage = () => {
+const Index = () => {
   return (
     <div>
       <p>预定</p>
@@ -6,4 +6,4 @@ const DocsPage = () => {
   );
 };
 
-export default DocsPage;
+export default Index;

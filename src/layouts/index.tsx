@@ -71,7 +71,7 @@ export default () => {
               },
             }}
             headerTitleRender={(logo, title, _) => {
-              return <div>456</div>;
+              return <h1>企业会议综合管理系统</h1>;
             }}
             menuItemRender={(menuItemProps, defaultDom) => {
               if (menuItemProps.isUrl || !menuItemProps.path) {
@@ -90,24 +90,7 @@ export default () => {
             }}
             {...settings}
           >
-            <PageContainer
-              token={{
-                paddingInlinePageContainerContent: num,
-              }}
-              extra={[
-                <Button key="3">操作</Button>,
-                <Button key="2">操作</Button>,
-                <Button
-                  key="1"
-                  type="primary"
-                  onClick={() => {
-                    setNum(num > 0 ? 0 : 40);
-                  }}
-                >
-                  主操作
-                </Button>,
-              ]}
-            >
+            <PageContainer pageHeaderRender={false}>
               <ProCard
                 style={{
                   minHeight: 800,
