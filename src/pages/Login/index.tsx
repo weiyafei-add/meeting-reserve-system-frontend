@@ -1,11 +1,11 @@
 import { LockOutlined, MobileOutlined, UserOutlined, QrcodeOutlined } from "@ant-design/icons";
 import { LoginFormPage, ProConfigProvider, ProFormCaptcha, ProFormText } from "@ant-design/pro-components";
-import { Button, Divider, Space, Tabs, message, theme } from "antd";
+import { Drawer, Divider, Space, Tabs, message, theme } from "antd";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import "./index.less";
 
-type LoginType = "register" | "login";
+type LoginType = "register" | "login" | "qrcode";
 
 const iconStyles: CSSProperties = {
   color: "rgba(0, 0, 0, 0.2)",
@@ -25,58 +25,31 @@ const Page = () => {
       }}
     >
       <LoginFormPage
-        onFinish={(data) => {
-          console.log(data);
-        }}
+        onFinish={async (formData) => {}}
         backgroundVideoUrl="https://gw.alipayobjects.com/v/huamei_gcee1x/afts/video/jXRBRK_VAwoAAAAAAAAAAAAAK4eUAQBr"
         title="企业会议综合管理系统"
         containerStyle={{
           backgroundColor: "rgba(0, 0, 0,0.65)",
-          backdropFilter: "blur(4px)",
+          // backdropFilter: "blur(4px)",
+          minHeight: "400px",
         }}
-        actions={
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <Divider plain>
-              <span
-                style={{
-                  color: token.colorTextPlaceholder,
-                  fontWeight: "normal",
-                  fontSize: 14,
-                }}
-              >
-                其他登录方式
-              </span>
-            </Divider>
-            <Space align="center" size={24}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  height: 40,
-                  width: 40,
-                  border: "1px solid " + token.colorPrimaryBorder,
-                  borderRadius: "50%",
-                }}
-              >
-                <QrcodeOutlined style={{ ...iconStyles, color: "#1677FF" }} />
-              </div>
-            </Space>
-          </div>
-        }
+        submitter={{
+          searchConfig: {
+            submitText: loginType === "login" ? "登录" : "注册",
+          },
+        }}
+        autoComplete="off"
       >
-        <Tabs centered activeKey={loginType} onChange={(activeKey) => setLoginType(activeKey as LoginType)}>
-          <Tabs.TabPane key={"login"} tab={"登录"} />
-          <Tabs.TabPane key={"register"} tab={"注册"} />
-        </Tabs>
+        <Tabs
+          items={[
+            { tabKey: "login", label: "登录", key: "login" },
+            { tabKey: "qrcode", label: "扫码登录", key: "qrcode" },
+            { tabKey: "register", label: "注册", key: "register" },
+          ]}
+          centered
+          activeKey={loginType}
+          onChange={(activeKey) => setLoginType(activeKey as LoginType)}
+        ></Tabs>
         {loginType === "login" && (
           <>
             <ProFormText
@@ -129,7 +102,7 @@ const Page = () => {
               fieldProps={{
                 size: "large",
                 prefix: (
-                  <MobileOutlined
+                  <UserOutlined
                     style={{
                       color: token.colorText,
                     }}
@@ -137,20 +110,16 @@ const Page = () => {
                   />
                 ),
               }}
-              name="mobile"
-              placeholder={"手机号"}
+              name="username"
+              placeholder={"用户名"}
               rules={[
                 {
                   required: true,
-                  message: "请输入手机号！",
-                },
-                {
-                  pattern: /^1\d{10}$/,
-                  message: "手机号格式错误！",
+                  message: "请输入用户名！",
                 },
               ]}
             />
-            <ProFormCaptcha
+            <ProFormText
               fieldProps={{
                 size: "large",
                 prefix: (
@@ -162,29 +131,62 @@ const Page = () => {
                   />
                 ),
               }}
-              captchaProps={{
-                size: "large",
-              }}
-              placeholder={"请输入验证码"}
-              captchaTextRender={(timing, count) => {
-                if (timing) {
-                  return `${count} ${"获取验证码"}`;
-                }
-                return "获取验证码";
-              }}
-              name="captcha"
+              placeholder={"请输入昵称"}
+              name="nickname"
               rules={[
                 {
                   required: true,
-                  message: "请输入验证码！",
+                  message: "请输入昵称!",
                 },
               ]}
-              onGetCaptcha={async () => {
-                message.success("获取验证码成功！验证码为：1234");
+            />
+            <ProFormText.Password
+              name="password"
+              fieldProps={{
+                size: "large",
+                prefix: (
+                  <LockOutlined
+                    style={{
+                      color: token.colorText,
+                    }}
+                    className={"prefixIcon"}
+                  />
+                ),
               }}
+              placeholder={"密码"}
+              rules={[
+                {
+                  required: true,
+                  message: "请输入密码！",
+                },
+              ]}
+            />
+
+            <ProFormText
+              name="email"
+              fieldProps={{
+                size: "large",
+                prefix: (
+                  <LockOutlined
+                    style={{
+                      color: token.colorText,
+                    }}
+                    className={"prefixIcon"}
+                  />
+                ),
+              }}
+              placeholder={"请输入邮箱"}
+              rules={[
+                {
+                  required: true,
+                  message: "请输入邮箱！",
+                },
+              ]}
             />
           </>
         )}
+
+        {loginType === "qrcode" && <div>qrcode login</div>}
       </LoginFormPage>
     </div>
   );

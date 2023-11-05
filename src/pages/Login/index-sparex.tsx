@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { QrcodeOutlined } from "@ant-design/icons";
-import "./index-spare.scss";
 import { history } from "umi";
 import request from "@/utils/request";
+import { register } from "./api";
+import "./index-spare.scss";
 
 const statusMap: any = {
   noscan: "未扫码",
@@ -24,19 +25,13 @@ const LoginForm = (props: { mode: string; onSubmit: any }) => {
           <Input type="password" id="password" label="密码" disabled={mode === "signup"} />
         </div>
         <div className="form-group form-group--signup">
-          <Input type="text" id="fullname" label="用户名" disabled={mode === "login"} />
+          <Input type="text" id="username" label="用户名" disabled={mode === "login"} />
+          <Input type="text" id="nickName" label="昵称" disabled={mode === "login"} />
+          <Input type="password" id="password" label="密码" disabled={mode === "login"} />
           <Input type="email" id="email" label="邮箱" disabled={mode === "login"} />
-          <Input type="password" id="createpassword" label="密码" disabled={mode === "login"} />
-          <Input type="password" id="repeatpassword" label="确认密码" disabled={mode === "login"} />
         </div>
       </div>
-      <button
-        className="button button--primary full-width"
-        type="submit"
-        onClick={() => {
-          history.push("/");
-        }}
-      >
+      <button className="button button--primary full-width" type="submit">
         {mode === "login" ? "登录" : "注册"}
       </button>
     </form>
@@ -50,9 +45,20 @@ const LoginComponent = () => {
   const [qrcodeStatus, setQrcodeStatus] = useState<string>("noscan");
   const [currentUser, setCurrentUser] = useState<string>("");
 
-  const onSubmit = (event: SubmitEvent) => {
+  const onSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
-    console.log(123);
+    if (mode === "login") {
+      history.push("/");
+      return;
+    }
+    let formValues: any = {};
+    Array.prototype.slice.call(event.target, 2, 6).forEach((item) => {
+      formValues[item.id] = item.value;
+    });
+    try {
+      const res = await register(formValues);
+      console.log(res);
+    } catch (error) {}
   };
 
   useEffect(() => {

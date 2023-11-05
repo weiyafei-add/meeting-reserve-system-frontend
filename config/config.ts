@@ -36,7 +36,6 @@ export const routes = [
           },
         ],
       },
-
       {
         path: "/user",
         name: "用户管理",
@@ -48,6 +47,7 @@ export const routes = [
           },
         ],
       },
+      { path: "/setting", name: "系统设置", component: "@/pages/setting" },
     ],
   },
 ];

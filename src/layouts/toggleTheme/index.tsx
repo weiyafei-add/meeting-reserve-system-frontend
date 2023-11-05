@@ -16,7 +16,7 @@ const Toggle = ({ themeChange }: { themeChange: (boolean: boolean) => void }) =>
 
   return (
     <div style={{ paddingBottom: 10 }}>
-      <button className="toggle" aria-pressed="false" title="Toggle Dark Mode">
+      <button className="toggle" aria-pressed="false" title="主题切换">
         <span className="toggle__content">
           <svg
             aria-hidden={true}
