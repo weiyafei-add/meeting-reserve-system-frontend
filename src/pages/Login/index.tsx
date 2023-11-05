@@ -1,121 +1,199 @@
-import React, { useState } from "react";
-import { QrcodeOutlined } from "@ant-design/icons";
-import "./index.scss";
-import { history } from "umi";
+import { LockOutlined, MobileOutlined, UserOutlined, QrcodeOutlined } from "@ant-design/icons";
+import { LoginFormPage, ProConfigProvider, ProFormCaptcha, ProFormText } from "@ant-design/pro-components";
+import { Button, Divider, Space, Tabs, message, theme } from "antd";
+import type { CSSProperties } from "react";
+import { useState } from "react";
+import "./index.less";
 
-const statusMap: any = {
-  noscan: "未扫码",
-  "scan-wait-confitm": "等待确认",
-  "scan-confirm": "已确认",
-  "scan-cancel": "已取消",
-  expired: "二维码已过期",
+type LoginType = "register" | "login";
+
+const iconStyles: CSSProperties = {
+  color: "rgba(0, 0, 0, 0.2)",
+  fontSize: "18px",
+  verticalAlign: "middle",
+  cursor: "pointer",
 };
 
-let interval: any = null;
-
-const LoginForm = (props: { mode: string; onSubmit: any; qrcodeLogin?: boolean }) => {
-  const { mode, onSubmit, qrcodeLogin } = props;
+const Page = () => {
+  const [loginType, setLoginType] = useState<LoginType>("login");
+  const { token } = theme.useToken();
   return (
-    <form onSubmit={onSubmit}>
-      <div className="form-block__input-wrapper">
-        <div className="form-group form-group--login">
-          <Input type="text" id="username" label="用户名" disabled={mode === "signup"} />
-          <Input type="password" id="password" label="密码" disabled={mode === "signup"} />
-        </div>
-        <div className="form-group form-group--signup">
-          <Input type="text" id="fullname" label="用户名" disabled={mode === "login"} />
-          <Input type="email" id="email" label="邮箱" disabled={mode === "login"} />
-          <Input type="password" id="createpassword" label="密码" disabled={mode === "login"} />
-          <Input type="password" id="repeatpassword" label="确认密码" disabled={mode === "login"} />
-        </div>
-      </div>
-      <button
-        className="button button--primary full-width"
-        type="submit"
-        onClick={() => {
-          history.push("/");
+    <div
+      style={{
+        backgroundColor: "white",
+        height: "100vh",
+      }}
+    >
+      <LoginFormPage
+        onFinish={(data) => {
+          console.log(data);
         }}
+        backgroundVideoUrl="https://gw.alipayobjects.com/v/huamei_gcee1x/afts/video/jXRBRK_VAwoAAAAAAAAAAAAAK4eUAQBr"
+        title="企业会议综合管理系统"
+        containerStyle={{
+          backgroundColor: "rgba(0, 0, 0,0.65)",
+          backdropFilter: "blur(4px)",
+        }}
+        actions={
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Divider plain>
+              <span
+                style={{
+                  color: token.colorTextPlaceholder,
+                  fontWeight: "normal",
+                  fontSize: 14,
+                }}
+              >
+                其他登录方式
+              </span>
+            </Divider>
+            <Space align="center" size={24}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  height: 40,
+                  width: 40,
+                  border: "1px solid " + token.colorPrimaryBorder,
+                  borderRadius: "50%",
+                }}
+              >
+                <QrcodeOutlined style={{ ...iconStyles, color: "#1677FF" }} />
+              </div>
+            </Space>
+          </div>
+        }
       >
-        {mode === "login" ? "登录" : "注册"}
-      </button>
-    </form>
-  );
-};
-
-const LoginComponent = () => {
-  const [mode, setMode] = useState("login");
-  const [qrcodeLogin, setQrcodeLogin] = useState(false);
-  const [qrcodeData, setQrcodeData] = useState<any>({});
-  const [qrcodeStatus, setQrcodeStatus] = useState<string>("");
-  const [currentUser, setCurrentUser] = useState<string>("");
-
-  const toggleMode = () => {
-    var newMode = mode === "login" ? "signup" : "login";
-    setMode(newMode);
-  };
-
-  const onSubmit = (event: SubmitEvent) => {
-    event.preventDefault();
-    console.log(123);
-  };
-
-  return (
-    <div className="login">
-      <div className={`form-block-wrapper form-block-wrapper--is-${mode}`}></div>
-
-      <section className={`form-block form-block--is-${mode}`}>
-        <div
-          className="qrcode"
-          onClick={() => {
-            setQrcodeLogin(!qrcodeLogin);
-            fetch("http://192.168.3.136:3000/qrcode/generate")
-              .then((res) => res.json())
-              .then((res) => {
-                setQrcodeData(res);
-                interval = setInterval(() => {
-                  fetch(`http://192.168.3.136:3000/qrcode/check?id=${res.qrcode_id}`)
-                    .then((res) => res.json())
-                    .then((res) => {
-                      setQrcodeStatus(res.status);
-                      if (res.status === "scan-confirm") {
-                        setCurrentUser(res.userInfo.username);
-                        console.log(res);
-                        // setTimeout(() => {
-                        //   clearInterval(interval);
-                        //   // history.push("/");
-                        // }, 1000);
-                      }
-                    });
-                }, 3000);
-              });
-          }}
-        >
-          <QrcodeOutlined className="qrcode-login" />
-        </div>
-        <header className="form-block__header">
-          <h1>{mode === "login" ? "欢迎" : "注册"}</h1>
-          {qrcodeLogin ? (
-            <div>
-              <img src={qrcodeData.img} />
-              <div>{statusMap[qrcodeStatus]}</div>
-              <div>{currentUser}</div>
-            </div>
-          ) : (
-            <div className="form-block__toggle-block">
-              <span>{mode === "login" ? "注册账户" : "登录"}&#8594;</span>
-              <input id="form-toggler" type="checkbox" onClick={toggleMode} />
-              <label htmlFor="form-toggler"></label>
-            </div>
-          )}
-        </header>
-        {!qrcodeLogin && <LoginForm mode={mode} qrcodeLogin={qrcodeLogin} onSubmit={onSubmit} />}
-      </section>
+        <Tabs centered activeKey={loginType} onChange={(activeKey) => setLoginType(activeKey as LoginType)}>
+          <Tabs.TabPane key={"login"} tab={"登录"} />
+          <Tabs.TabPane key={"register"} tab={"注册"} />
+        </Tabs>
+        {loginType === "login" && (
+          <>
+            <ProFormText
+              name="username"
+              fieldProps={{
+                size: "large",
+                prefix: (
+                  <UserOutlined
+                    style={{
+                      color: token.colorText,
+                    }}
+                    className={"prefixIcon"}
+                  />
+                ),
+              }}
+              placeholder={"用户名"}
+              rules={[
+                {
+                  required: true,
+                  message: "请输入用户名!",
+                },
+              ]}
+            />
+            <ProFormText.Password
+              name="password"
+              fieldProps={{
+                size: "large",
+                prefix: (
+                  <LockOutlined
+                    style={{
+                      color: token.colorText,
+                    }}
+                    className={"prefixIcon"}
+                  />
+                ),
+              }}
+              placeholder={"密码"}
+              rules={[
+                {
+                  required: true,
+                  message: "请输入密码！",
+                },
+              ]}
+            />
+          </>
+        )}
+        {loginType === "register" && (
+          <>
+            <ProFormText
+              fieldProps={{
+                size: "large",
+                prefix: (
+                  <MobileOutlined
+                    style={{
+                      color: token.colorText,
+                    }}
+                    className={"prefixIcon"}
+                  />
+                ),
+              }}
+              name="mobile"
+              placeholder={"手机号"}
+              rules={[
+                {
+                  required: true,
+                  message: "请输入手机号！",
+                },
+                {
+                  pattern: /^1\d{10}$/,
+                  message: "手机号格式错误！",
+                },
+              ]}
+            />
+            <ProFormCaptcha
+              fieldProps={{
+                size: "large",
+                prefix: (
+                  <LockOutlined
+                    style={{
+                      color: token.colorText,
+                    }}
+                    className={"prefixIcon"}
+                  />
+                ),
+              }}
+              captchaProps={{
+                size: "large",
+              }}
+              placeholder={"请输入验证码"}
+              captchaTextRender={(timing, count) => {
+                if (timing) {
+                  return `${count} ${"获取验证码"}`;
+                }
+                return "获取验证码";
+              }}
+              name="captcha"
+              rules={[
+                {
+                  required: true,
+                  message: "请输入验证码！",
+                },
+              ]}
+              onGetCaptcha={async () => {
+                message.success("获取验证码成功！验证码为：1234");
+              }}
+            />
+          </>
+        )}
+      </LoginFormPage>
     </div>
   );
 };
 
-const Input = ({ id, type, label, disabled }: { id: string; type: string; label: string; disabled: boolean }) => (
-  <input className="form-group__input" type={type} id={id} placeholder={label} disabled={disabled} />
-);
-
-export default LoginComponent;
+export default () => {
+  return (
+    <ProConfigProvider dark>
+      <Page />
+    </ProConfigProvider>
+  );
+};

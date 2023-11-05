@@ -20,7 +20,23 @@ export const routes = [
           },
         ],
       },
-      { path: "/room", name: "在线会议室", component: "@/pages/Room" },
+      {
+        path: "/online-meeting",
+        name: "在线会议",
+        routes: [
+          {
+            path: "/online-meeting/online-meeting-list",
+            name: "会议列表",
+            component: "@/pages/online-meeting/online-meeting-list",
+          },
+          {
+            path: "/online-meeting/create-online-meeting",
+            name: "创建会议室",
+            component: "@/pages/online-meeting/create-online-meeting",
+          },
+        ],
+      },
+
       {
         path: "/user",
         name: "用户管理",

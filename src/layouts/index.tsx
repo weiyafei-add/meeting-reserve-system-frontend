@@ -5,7 +5,8 @@ import { Button, ConfigProvider, Dropdown } from "antd";
 import React, { useState } from "react";
 import defaultProps from "./_defaultProps";
 import { Link, Outlet, useLocation, history } from "umi";
-import Login from "../pages/Login";
+import Login from "../pages/Login/index-sparex";
+import Toggle from "./toggleTheme";
 
 export default () => {
   const location = useLocation();
@@ -16,6 +17,7 @@ export default () => {
   const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
     fixSiderbar: true,
     layout: "mix",
+    navTheme: "light",
   });
 
   const [pathname, setPathname] = useState<any>(useLocation().pathname || "/");
@@ -70,6 +72,20 @@ export default () => {
                 );
               },
             }}
+            actionsRender={(props) => {
+              if (props.isMobile) return [];
+              if (typeof window === "undefined") return [];
+              return [
+                <Toggle
+                  themeChange={(toogle) => {
+                    setSetting({
+                      ...settings,
+                      navTheme: toogle ? "realDark" : "light",
+                    });
+                  }}
+                ></Toggle>,
+              ];
+            }}
             headerTitleRender={(logo, title, _) => {
               return <h1>企业会议综合管理系统</h1>;
             }}
@@ -91,11 +107,7 @@ export default () => {
             {...settings}
           >
             <PageContainer pageHeaderRender={false}>
-              <ProCard
-                style={{
-                  minHeight: 800,
-                }}
-              >
+              <ProCard>
                 <Outlet />
               </ProCard>
             </PageContainer>
