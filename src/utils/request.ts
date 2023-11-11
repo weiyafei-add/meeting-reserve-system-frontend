@@ -9,12 +9,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (config) => {
-    console.log(config);
     return config;
   },
   ({ response }) => {
-    if (response.status === 400) {
+    if (`${response.status}`.startsWith("4")) {
       message.error(response.data.message);
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
     }
     return Promise.reject(response);
   }
@@ -33,12 +34,11 @@ const request = ({
   params?: any;
   data?: any;
 }) => {
-  if (method === "POST") {
-    headers = {
-      ...headers,
-      "Content-Type": "application/json",
-    };
-  }
+  headers = {
+    ...headers,
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  };
 
   return axiosInstance({
     url: `${BaseUrl}${url}`,
@@ -46,7 +46,7 @@ const request = ({
     headers,
     params,
     data,
-  });
+  }).then((res) => res.data);
 };
 
 export default request;

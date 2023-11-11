@@ -47,6 +47,22 @@ export const routes = [
           },
         ],
       },
+      {
+        path: "/profile",
+        name: "个人信息",
+        routes: [
+          {
+            path: "/profile/updatepassword",
+            name: "密码修改",
+            component: "@/pages/profile/updatePassword",
+          },
+          {
+            path: "/profile/updateUserinfo",
+            name: "信息修改",
+            component: "@/pages/profile/updateUserinfo",
+          },
+        ],
+      },
       { path: "/setting", name: "系统设置", component: "@/pages/setting" },
     ],
   },

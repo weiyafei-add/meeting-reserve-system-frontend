@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
+// @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
 
 $borderRadius: 1px;
 $offset: 150%;
@@ -118,7 +118,7 @@ body {
   margin-bottom: 2px;
   @include transition(all 0.25s $transitionEasing 0.3s);
   .form-block--is-signup & {
-    height: 4 * $inputHeight;
+    height: 5 * $inputHeight;
     @include transition(all 0.5s $transitionEasing 0.2s);
   }
 }
@@ -164,9 +164,13 @@ body {
       opacity: 1;
     }
   }
+
+  button {
+    height: 48px;
+  }
 }
 
-@for $i from 1 through 4 {
+@for $i from 1 through 5 {
   .form-group__input:nth-of-type(#{$i}) {
     @include transition(
       transform 0.35s $transitionEasing $i * 0.085s,

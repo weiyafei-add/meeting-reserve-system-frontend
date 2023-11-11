@@ -7,6 +7,7 @@ import defaultProps from "./_defaultProps";
 import { Link, Outlet, useLocation, history } from "umi";
 import Login from "../pages/Login/index-sparex";
 import Toggle from "./toggleTheme";
+import styles from "./index.modules.less";
 
 export default () => {
   const location = useLocation();
@@ -61,6 +62,8 @@ export default () => {
                           icon: <LogoutOutlined />,
                           label: "退出登录",
                           onClick: () => {
+                            localStorage.removeItem("accessToken");
+                            localStorage.removeItem("refreshToken");
                             history.push("/login");
                           },
                         },
@@ -87,7 +90,7 @@ export default () => {
               ];
             }}
             headerTitleRender={(logo, title, _) => {
-              return <h1>企业会议综合管理系统</h1>;
+              return <h1 className={styles.logo_text}>企业会议综合管理系统</h1>;
             }}
             menuItemRender={(menuItemProps, defaultDom) => {
               if (menuItemProps.isUrl || !menuItemProps.path) {
@@ -105,12 +108,11 @@ export default () => {
               );
             }}
             {...settings}
+            contentStyle={{ minHeight: "calc(100vh - 56px)" }}
           >
-            <PageContainer pageHeaderRender={false}>
-              <ProCard>
-                <Outlet />
-              </ProCard>
-            </PageContainer>
+            <div style={{ height: "100%", backgroundColor: "#fff", color: "#000", borderRadius: "10px" }}>
+              <Outlet />
+            </div>
           </ProLayout>
         </ConfigProvider>
       </ProConfigProvider>

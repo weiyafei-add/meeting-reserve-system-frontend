@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import { QrcodeOutlined } from "@ant-design/icons";
 import { history } from "umi";
 import request from "@/utils/request";
-import { register } from "./api";
+import { register, getCaptcha, login } from "./api";
+import { message } from "antd";
 import "./index-spare.scss";
 
 const statusMap: any = {
@@ -17,6 +18,25 @@ let interval: any = null;
 
 const LoginForm = (props: { mode: string; onSubmit: any }) => {
   const { mode, onSubmit } = props;
+  const [email, setEmail] = useState("");
+
+  const handleGetCaptcha = (e: any) => {
+    e.preventDefault();
+    if (!email) {
+      message.error("请输入有效的邮箱");
+      return;
+    }
+    getCaptcha({
+      address: email,
+    }).then((res) => {
+      message.success("发送成功");
+    });
+  };
+
+  const onChange = (e: any) => {
+    setEmail(e.target.value);
+  };
+
   return (
     <form onSubmit={onSubmit}>
       <div className="form-block__input-wrapper">
@@ -28,12 +48,20 @@ const LoginForm = (props: { mode: string; onSubmit: any }) => {
           <Input type="text" id="username" label="用户名" disabled={mode === "login"} />
           <Input type="text" id="nickName" label="昵称" disabled={mode === "login"} />
           <Input type="password" id="password" label="密码" disabled={mode === "login"} />
-          <Input type="email" id="email" label="邮箱" disabled={mode === "login"} />
+          <Input type="email" id="email" label="邮箱" onChange={onChange} disabled={mode === "login"} />
+          <Input type="captcha" id="captcha" label="验证码" disabled={mode === "login"} />
         </div>
       </div>
-      <button className="button button--primary full-width" type="submit">
-        {mode === "login" ? "登录" : "注册"}
-      </button>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button className="button button--primary full-width" type="submit">
+          {mode === "login" ? "登录" : "注册"}
+        </button>
+        {mode !== "login" && (
+          <button className="button button--primary full-width" onClick={handleGetCaptcha}>
+            获取验证码
+          </button>
+        )}
+      </div>
     </form>
   );
 };
@@ -46,18 +74,34 @@ const LoginComponent = () => {
   const [currentUser, setCurrentUser] = useState<string>("");
 
   const onSubmit = async (event: SubmitEvent) => {
+    let formValues: any = {};
+
     event.preventDefault();
     if (mode === "login") {
-      history.push("/");
+      Array.prototype.slice.call(event.target, 0, 2).forEach((item) => {
+        formValues[item.id] = item.value;
+      });
+      try {
+        const { data } = await login(formValues);
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        message.success("登录成功");
+        history.push("/");
+      } catch (error) {
+        console.log(error);
+      }
+
       return;
     }
-    let formValues: any = {};
-    Array.prototype.slice.call(event.target, 2, 6).forEach((item) => {
+
+    Array.prototype.slice.call(event.target, 2, 7).forEach((item) => {
       formValues[item.id] = item.value;
     });
     try {
       const res = await register(formValues);
-      console.log(res);
+      if (res.data === "success") {
+        message.success("注册成功");
+      }
     } catch (error) {}
   };
 
@@ -129,8 +173,18 @@ const LoginComponent = () => {
   );
 };
 
-const Input = ({ id, type, label, disabled }: { id: string; type: string; label: string; disabled: boolean }) => (
-  <input className="form-group__input" type={type} id={id} placeholder={label} disabled={disabled} />
-);
+const Input = ({
+  id,
+  type,
+  label,
+  disabled,
+  ...rest
+}: {
+  id: string;
+  type: string;
+  label: string;
+  disabled: boolean;
+  [key: string]: any;
+}) => <input {...rest} className="form-group__input" type={type} id={id} placeholder={label} disabled={disabled} />;
 
 export default LoginComponent;

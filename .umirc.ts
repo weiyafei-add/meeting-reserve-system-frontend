@@ -4,5 +4,5 @@ import { routes } from "./config/config";
 export default defineConfig({
   routes: routes,
   npmClient: "yarn",
-  scripts: [{ src: "./adapter-latest.js", defer: true }],
+  // scripts: [{ src: "./adapter-latest.js", defer: true }],
 });
