@@ -10,11 +10,12 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
-    "@ant-design/pro-components": "^2.6.29",
+    "@ant-design/pro-components": "^2.6.35",
     "@emotion/css": "^11.11.2",
     "antd": "^5.10.0",
     "axios": "^1.6.0",
     "cross-env": "^7.0.3",
+    "moment": "^2.29.4",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "umi": "^4.0.85"

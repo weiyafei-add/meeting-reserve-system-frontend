@@ -1,5 +1,6 @@
 import { message } from "antd";
 import axios, { Method } from "axios";
+import { history } from "umi";
 
 let BaseUrl = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "";
 
@@ -12,11 +13,12 @@ axiosInstance.interceptors.response.use(
     return config;
   },
   ({ response }) => {
-    if (`${response.status}`.startsWith("4")) {
-      message.error(response.data.message);
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-    }
+    // if (`${response.status}`.startsWith("4")) {
+    //   message.error(response.data.message);
+    //   localStorage.removeItem("access_token");
+    //   localStorage.removeItem("refresh_token");
+    //   history.push("/login");
+    // }
     return Promise.reject(response);
   }
 );

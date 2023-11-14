@@ -110,9 +110,9 @@ export default () => {
             {...settings}
             contentStyle={{ minHeight: "calc(100vh - 56px)" }}
           >
-            <div style={{ height: "100%", backgroundColor: "#fff", color: "#000", borderRadius: "10px" }}>
+            <ProCard style={{ height: "100%" }}>
               <Outlet />
-            </div>
+            </ProCard>
           </ProLayout>
         </ConfigProvider>
       </ProConfigProvider>
