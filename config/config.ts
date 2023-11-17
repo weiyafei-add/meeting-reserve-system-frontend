@@ -15,7 +15,7 @@ export const routes = [
           },
           {
             path: "/meetingroom-manager/reserve",
-            name: "预定会议室",
+            name: "我的预定",
             component: "@/pages/meetingroom-manager/reserve",
           },
         ],
@@ -26,7 +26,7 @@ export const routes = [
         routes: [
           {
             path: "/online-meeting/online-meeting-list",
-            name: "会议列表",
+            name: "我的会议",
             component: "@/pages/online-meeting/online-meeting-list",
           },
           {

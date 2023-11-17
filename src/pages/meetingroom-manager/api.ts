@@ -30,3 +30,32 @@ export function deleteRoom(params: any) {
     method: "delete",
   });
 }
+
+// 预定会议室
+export function bookingRoom(data: { id: number; startTime: number; endTime: number }) {
+  return request({
+    url: "/booking/room",
+    data,
+    method: "POST",
+  });
+}
+
+/**
+ * 我的预定
+ */
+
+export function getMyBookingList() {
+  return request({
+    url: "/booking/myBooking",
+    method: "GET",
+  });
+}
+
+// 取消预定
+export function cancelBookingRoom(data: { id: number }) {
+  return request({
+    url: "/booking/cancel",
+    data,
+    method: "POST",
+  });
+}
