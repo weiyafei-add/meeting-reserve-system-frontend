@@ -1,6 +1,15 @@
-import { Button, Switch, message } from "antd";
+import { Button, Col, Row, Switch, message } from "antd";
+import { useEffect, useState } from "react";
 
 const Setting = () => {
+  const [status, setStatus] = useState("granted");
+
+  useEffect(() => {
+    Notification.requestPermission(function (permission) {
+      setStatus(permission);
+    });
+  }, []);
+
   const compatible = function () {
     if (typeof Notification === "undefined") {
       message.info("浏览器暂不支持消息通知");
@@ -14,27 +23,19 @@ const Setting = () => {
       Notification.requestPermission(function (permission) {
         console.log(permission);
       });
+      return;
     }
+    Notification.requestPermission();
   };
 
   return (
     <div>
-      <Switch title="开启通知" onChange={handleOnChange} />
-      <Button
-        onClick={() => {
-          if (compatible()) {
-            new Notification("会议开始通知", {
-              body: "您预约的会议即将开始，请注意及时入会哦！",
-              tag: "0",
-              icon: "",
-              renotify: true,
-              dir: "auto",
-            });
-          }
-        }}
-      >
-        测试通知
-      </Button>
+      <Row>
+        <Col>开启桌面通知：</Col>
+        <Col>
+          <Switch checked={status === "granted"} onChange={handleOnChange} />
+        </Col>
+      </Row>
     </div>
   );
 };
