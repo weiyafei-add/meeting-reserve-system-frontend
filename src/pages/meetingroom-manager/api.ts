@@ -32,7 +32,7 @@ export function deleteRoom(params: any) {
 }
 
 // 预定会议室
-export function bookingRoom(data: { id: number; startTime: number; endTime: number }) {
+export function bookingRoom(data: { id: number; startTime: number; endTime: number; clientId: string }) {
   return request({
     url: "/booking/room",
     data,

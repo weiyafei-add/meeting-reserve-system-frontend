@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getMyBookingList, cancelBookingRoom } from "../api";
-import { Avatar, Card, Col, Row, MenuProps, Modal, message } from "antd";
+import { Avatar, Card, Col, Row, Modal, message, Empty } from "antd";
 import dayjs from "dayjs";
 
 const { Meta } = Card;
@@ -85,6 +85,7 @@ const Index = () => {
 
   return (
     <div>
+      {myBookingList.length === 0 && <Empty description="还没有预定的会议室哦" style={{ marginTop: "20%" }}></Empty>}
       <Row gutter={16}>{renderBookingList()}</Row>
     </div>
   );

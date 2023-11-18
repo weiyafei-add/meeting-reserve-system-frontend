@@ -23,6 +23,7 @@ export default () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [bookRoomId, setBookRoomId] = useState<any>(0);
   const actionRef = useRef<ActionType>();
+  const [tempKey, setTempKey] = useState(Math.random().toString().slice(3, 8));
 
   const [form] = Form.useForm();
 
@@ -37,6 +38,9 @@ export default () => {
       title: "会议室状态",
       dataIndex: "isBooked",
       render: (text, record) => {
+        if (typeof text !== "boolean") {
+          text = false;
+        }
         return <Tag color={`${text ? "red" : "green"}`}>{text ? "已被预定" : "可预定"}</Tag>;
       },
       hideInSearch: true,
@@ -145,13 +149,14 @@ export default () => {
             onClick={() => {
               actionRef.current?.addEditRecord(
                 {
-                  id: 0.1,
+                  id: tempKey,
                   createTime: dayjs(),
                   updateTime: dayjs(),
                 },
                 {
-                  recordKey: 0.1,
+                  recordKey: tempKey,
                   newRecordType: "dataSource",
+                  position: "top",
                 }
               );
             }}
@@ -166,13 +171,16 @@ export default () => {
             setEditableRowKeys(editableKeys);
           },
           onSave: async (rowKey, data, row) => {
-            if (rowKey === 0.1) {
+            if (rowKey === tempKey) {
               await createRoom(data);
               message.success("新增会议室成功");
+              setTempKey(Math.random().toString().slice(3, 8));
+              actionRef.current?.reload();
               return;
             }
             await updateRoom(data);
             message.success("更新会议室成功");
+            actionRef.current?.reload();
           },
 
           onCancel: async (key) => {
@@ -182,6 +190,7 @@ export default () => {
           onDelete: async (key, row) => {
             await deleteRoom({ id: key });
             message.success("删除成功");
+            actionRef.current?.reload();
           },
         }}
         rowKey="id"
@@ -202,7 +211,6 @@ export default () => {
         dateFormatter="string"
         headerTitle="会议室列表"
       />
-      )
       <Modal
         title="预定会议室"
         open={bookRoomId}
@@ -215,6 +223,7 @@ export default () => {
             id: bookRoomId,
             startTime: dayjs(startTime).valueOf(),
             endTime: dayjs(endTime).valueOf(),
+            clientId: sessionStorage.getItem("clientId") as string,
           });
           message.success("预定成功");
           setBookRoomId(0);

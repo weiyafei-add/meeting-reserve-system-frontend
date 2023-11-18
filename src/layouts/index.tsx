@@ -1,13 +1,14 @@
 import { LogoutOutlined } from "@ant-design/icons";
 import type { ProSettings } from "@ant-design/pro-components";
-import { PageContainer, ProCard, ProConfigProvider, ProLayout } from "@ant-design/pro-components";
-import { Button, ConfigProvider, Dropdown } from "antd";
-import React, { useState } from "react";
+import { ProCard, ProConfigProvider, ProLayout } from "@ant-design/pro-components";
+import { ConfigProvider, Dropdown, notification } from "antd";
+import React, { useState, useEffect } from "react";
 import defaultProps from "./_defaultProps";
 import { Link, Outlet, useLocation, history } from "umi";
 import Login from "../pages/Login/index-sparex";
 import Toggle from "./toggleTheme";
 import styles from "./index.modules.less";
+import io from "socket.io-client";
 
 export default () => {
   const location = useLocation();
@@ -26,6 +27,31 @@ export default () => {
   if (typeof document === "undefined") {
     return <div />;
   }
+
+  useEffect(() => {
+    const client = io("http://localhost:3636");
+
+    client.on("connect", () => {
+      sessionStorage.setItem("clientId", client.id);
+      notification.success({
+        message: "成功连接到服务器",
+      });
+    });
+
+    client.on("notice", () => {
+      new Notification("会议开始通知", {
+        body: "您预约的会议还有5分钟就开始，请注意及时入会哦！",
+        tag: "0",
+        icon: "",
+        renotify: true,
+        dir: "auto",
+      });
+    });
+    return () => {
+      client.disconnect();
+    };
+  }, []);
+
   return (
     <div id="test-pro-layout">
       <ProConfigProvider hashed={false}>
