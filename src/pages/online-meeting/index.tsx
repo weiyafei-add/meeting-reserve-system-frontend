@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState, useReducer } from "react";
 import io, { Socket } from "socket.io-client";
 import { determinDevice, APP_URL, ROOM_ID } from "@/utils/webRtc";
 import "./index.css";
+import { Input } from "antd";
+import { formatDate } from "./util";
 
 type InitiateState = typeof initiateState;
 
@@ -11,7 +13,7 @@ const ICE_SERVERS = [
 ];
 
 let signalingSocket: Socket;
-let localMediaStream: null | {} = null;
+let localMediaStream: any = null;
 let peerMediaElements: any = {};
 let peers: any = {};
 let channel: any = {};
@@ -45,8 +47,11 @@ const initiateState = {
   callEnded: false,
 };
 
-const Room = () => {
+const attachMediaStream = (element: HTMLVideoElement, stream: MediaStream) => (element.srcObject = stream);
+
+const Room = (props: { name: string }) => {
   const App = useRef<any>({}).current;
+  const chatsRef = useRef<any>();
   const [name, setName] = useState("AAAA");
   const [state, setState] = useReducer((state: any, paylod: any) => ({ ...state, ...paylod }), initiateState) as [
     InitiateState,
@@ -55,14 +60,11 @@ const Room = () => {
 
   function initiateCall() {
     determinDevice(App);
-
+    App.callInitiated = true;
     App.roomId = ROOM_ID;
     App.roomLink = `${APP_URL}/${ROOM_ID}`;
-    signalingSocket = io("http://192.168.1.186:3000");
+    signalingSocket = io("http://192.168.124.5:3000");
     //   signalingSocket = io(); 连接到当前服务器
-    setState({
-      ...App,
-    });
     signalingSocket.on("connect", () => {
       App.peerId = signalingSocket.id;
       setState({
@@ -72,10 +74,10 @@ const Room = () => {
 
       const userData = {
         peerName: name,
-        videoEnabled: state.videoEnabled,
-        audioEnabled: state.audioEnabled,
-        userAgent: state.userAgent,
-        isMobileDevice: state.isMobileDevice,
+        videoEnabled: App.videoEnabled,
+        audioEnabled: App.audioEnabled,
+        userAgent: App.userAgent,
+        isMobileDevice: App.isMobileDevice,
         isTablet: App.isTablet,
         isIpad: App.isIpad,
         isDesktop: App.isDesktop,
@@ -89,6 +91,102 @@ const Room = () => {
         });
       }
     });
+
+    const setupLocalMedia = (callback: () => void) => {
+      if (localMediaStream !== null) {
+        if (callback) callback();
+        return;
+      }
+      navigator.mediaDevices
+        .getUserMedia({
+          audio: true,
+          video: true,
+        })
+        .then((stream) => {
+          localMediaStream = stream;
+          const localMedia = getVideoElement(App.peerId, true);
+          attachMediaStream(localMedia, stream);
+          resizeVideos();
+          if (callback) {
+            callback();
+          }
+          navigator.mediaDevices.enumerateDevices().then((devices) => {
+            setState({
+              videoDevices: devices.filter((device) => device.kind === "videoinput" && device.deviceId !== "default"),
+              audioDevices: devices.filter((device) => device.kind === "audioinput" && device.deviceId !== "default"),
+            });
+          });
+        })
+        .catch(() => {
+          alert("会议室需要视频和麦克风授权才可以用哦");
+        });
+    };
+
+    const resizeVideos = () => {
+      const numToString = ["", "one", "two", "three", "four", "five", "six"];
+      const videos = document.querySelectorAll("#videos .video");
+      document.querySelectorAll("#videos .video").forEach((v) => {
+        v.className = "video " + numToString[videos.length];
+      });
+    };
+
+    const getVideoElement = (peerId: any, isLocal?: boolean) => {
+      const videoWrap = document.createElement("div") as any;
+      videoWrap.className = "video";
+
+      const media = document.createElement("video") as any;
+      media.setAttribute("playsinline", true);
+      media.autoplay = true;
+      media.controls = false;
+      if (isLocal) {
+        media.setAttribute("id", "selfVideo");
+        media.className = "mirror";
+        media.muted = true;
+        media.volume = 0;
+      } else {
+        media.mediaGroup = "remotevideo";
+      }
+
+      const audioEnabled = document.createElement("i");
+      audioEnabled.setAttribute("id", peerId + "_audioEnabled");
+      audioEnabled.className = "audioEnabled icon-mic";
+
+      const peerNameEle = document.createElement("div");
+      peerNameEle.setAttribute("id", peerId + "_videoPeerName");
+      peerNameEle.className = "videoPeerName";
+      if (isLocal) {
+        peerNameEle.innerHTML = `${props.name ?? ""} (自己)`;
+      } else {
+        peerNameEle.innerHTML = "Unnamed";
+      }
+
+      const fullScreenBtn = document.createElement("button");
+      fullScreenBtn.className = "icon-maximize";
+      fullScreenBtn.addEventListener("click", () => {
+        if (videoWrap.requestFullscreen) {
+          videoWrap.requestFullscreen();
+        } else if (videoWrap.webkitRequestFullscreen) {
+          videoWrap.webkitRequestFullscreen();
+        }
+      });
+
+      const videoAvatarImgSize = App.isMobileDevice ? "100px" : "200px";
+      const videoAvatarImg = document.createElement("img");
+      videoAvatarImg.setAttribute("id", peerId + "_videoEnabled");
+      videoAvatarImg.setAttribute("src", "/videoOff.png");
+      videoAvatarImg.setAttribute("width", videoAvatarImgSize);
+      videoAvatarImg.setAttribute("height", videoAvatarImgSize);
+      videoAvatarImg.className = "videoAvatarImg";
+
+      videoWrap.setAttribute("id", peerId);
+      videoWrap.appendChild(media);
+      videoWrap.appendChild(audioEnabled);
+      videoWrap.appendChild(peerNameEle);
+      videoWrap.appendChild(fullScreenBtn);
+      videoWrap.appendChild(videoAvatarImg);
+      document.getElementById("videos")!.appendChild(videoWrap);
+      return media;
+    };
 
     signalingSocket.on("disconnect", () => {
       for (let peet_id in peerMediaElements) {
@@ -256,109 +354,13 @@ const Room = () => {
     signalingSocket.emit("join", { channel, userData });
   };
 
-  const attachMediaStream = (element: HTMLVideoElement, stream: MediaStream) => (element.srcObject = stream);
-
-  const resizeVideos = () => {
-    const numToString = ["", "one", "two", "three", "four", "five", "six"];
-    const videos = document.querySelectorAll("#videos .video");
-    document.querySelectorAll("#videos .video").forEach((v) => {
-      v.className = "video " + numToString[videos.length];
-    });
-  };
-
-  const setupLocalMedia = (callback: () => void) => {
-    if (localMediaStream !== null) {
-      if (callback) callback();
-      return;
-    }
-    navigator.mediaDevices
-      .getUserMedia({
-        audio: true,
-        video: true,
-      })
-      .then((stream) => {
-        localMediaStream = stream;
-        const localMedia = getVideoElement(App.peerId, true);
-        attachMediaStream(localMedia, stream);
-        resizeVideos();
-        if (callback) {
-          callback();
-        }
-        navigator.mediaDevices.enumerateDevices().then((devices) => {
-          setState({
-            videoDevices: devices.filter((device) => device.kind === "videoinput" && device.deviceId !== "default"),
-            audioDevices: devices.filter((device) => device.kind === "audioinput" && device.deviceId !== "default"),
-          });
-        });
-      })
-      .catch(() => {
-        alert("会议室需要视频和麦克风授权才可以用哦");
-      });
-  };
-
-  const getVideoElement = (peerId: any, isLocal?: boolean) => {
-    const videoWrap = document.createElement("div") as any;
-    videoWrap.className = "video";
-
-    const media = document.createElement("video") as any;
-    media.setAttribute("playsinline", true);
-    media.autoplay = true;
-    media.controls = false;
-    if (isLocal) {
-      media.setAttribute("id", "selfVideo");
-      media.className = "mirror";
-      media.muted = true;
-      media.volume = 0;
-    } else {
-      media.mediaGroup = "remotevideo";
-    }
-
-    const audioEnabled = document.createElement("i");
-    audioEnabled.setAttribute("id", peerId + "_audioEnabled");
-    audioEnabled.className = "audioEnabled icon-mic";
-
-    const peerNameEle = document.createElement("div");
-    peerNameEle.setAttribute("id", peerId + "_videoPeerName");
-    peerNameEle.className = "videoPeerName";
-    if (isLocal) {
-      peerNameEle.innerHTML = `${App.name ?? ""} (自己)`;
-    } else {
-      peerNameEle.innerHTML = "Unnamed";
-    }
-
-    const fullScreenBtn = document.createElement("button");
-    fullScreenBtn.className = "icon-maximize";
-    fullScreenBtn.addEventListener("click", () => {
-      if (videoWrap.requestFullscreen) {
-        videoWrap.requestFullscreen();
-      } else if (videoWrap.webkitRequestFullscreen) {
-        videoWrap.webkitRequestFullscreen();
-      }
-    });
-
-    const videoAvatarImgSize = App.isMobileDevice ? "100px" : "200px";
-    const videoAvatarImg = document.createElement("img");
-    videoAvatarImg.setAttribute("id", peerId + "_videoEnabled");
-    videoAvatarImg.setAttribute("src", "/videoOff.png");
-    videoAvatarImg.setAttribute("width", videoAvatarImgSize);
-    videoAvatarImg.setAttribute("height", videoAvatarImgSize);
-    videoAvatarImg.className = "videoAvatarImg";
-
-    videoWrap.setAttribute("id", peerId);
-    videoWrap.appendChild(media);
-    videoWrap.appendChild(audioEnabled);
-    videoWrap.appendChild(peerNameEle);
-    videoWrap.appendChild(fullScreenBtn);
-    videoWrap.appendChild(videoAvatarImg);
-    document.getElementById("videos")!.appendChild(videoWrap);
-    return media;
-  };
-
   useEffect(() => {
     initiateCall();
+
+    return () => {};
   }, []);
 
-  const audioToggle = (e) => {
+  const audioToggle = (e: any) => {
     e.stopPropagation();
     localMediaStream.getAudioTracks()[0].enabled = !localMediaStream.getAudioTracks()[0].enabled;
     setState({
@@ -367,7 +369,7 @@ const Room = () => {
     updateUserData("audioEnabled", !state.audioEnabled);
   };
 
-  const videoToggle = (e) => {
+  const videoToggle = (e: any) => {
     e.stopPropagation();
     localMediaStream.getVideoTracks()[0].enabled = !localMediaStream.getVideoTracks()[0].enabled;
     setState({
@@ -376,22 +378,23 @@ const Room = () => {
     updateUserData("videoEnabled", !state.videoEnabled);
   };
 
-  const screenShareToggle = (e) => {
+  const screenShareToggle = async (e?: any) => {
     e.stopPropagation();
-    let screenMediaPromise;
+    let screenMediaPromise: Promise<MediaStream>;
+    // 没有共享屏幕，尝试获取用户去选择和授权捕获展示的内容或部分内容
     if (!state.screenShareEnabled) {
-      if (navigator.getDisplayMedia) {
-        screenMediaPromise = navigator.getDisplayMedia({ video: true });
+      if ((navigator as any).getDisplayMedia) {
+        screenMediaPromise = (navigator as any).getDisplayMedia({ video: true });
       } else if (navigator.mediaDevices.getDisplayMedia) {
         screenMediaPromise = navigator.mediaDevices.getDisplayMedia({ video: true });
       } else {
         screenMediaPromise = navigator.mediaDevices.getUserMedia({
           video: { mediaSource: "screen" },
-        });
+        } as any);
       }
     } else {
       screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
-      document.getElementById(state.peerId + "_videoEnabled").style.visibility = "hidden";
+      document.getElementById(state.peerId + "_videoEnabled")!.style.visibility = "hidden";
     }
     screenMediaPromise
       .then((screenStream) => {
@@ -409,7 +412,7 @@ const Room = () => {
         screenStream.getVideoTracks()[0].enabled = true;
         const newStream = new MediaStream([screenStream.getVideoTracks()[0], localMediaStream.getAudioTracks()[0]]);
         localMediaStream = newStream;
-        attachMediaStream(document.getElementById("selfVideo"), newStream);
+        attachMediaStream(document.getElementById("selfVideo") as any, newStream);
         toggleSelfVideoMirror();
 
         screenStream.getVideoTracks()[0].onended = function () {
@@ -435,7 +438,7 @@ const Room = () => {
           hideToolbar: false,
           chats: [...state.chats, dataMessage],
         });
-        // scrollToBottom()
+        scrollToBottom();
         break;
       case "audioEnabled":
         document.getElementById(dataMessage.id + "_audioEnabled")!.className =
@@ -454,10 +457,16 @@ const Room = () => {
     }
   };
 
-  const sendDataMessage = (key, value) => {
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      chatsRef.current.scrollTop = chatsRef.current.scrollHeight;
+    });
+  };
+
+  const sendDataMessage = (key: string, value: any) => {
     const dataMessage = {
       type: key,
-      name: state.name,
+      name: props.name,
       id: state.peerId,
       message: value,
       date: new Date().toISOString(),
@@ -468,7 +477,7 @@ const Room = () => {
         setState({
           chats: [...state.chats, dataMessage],
         });
-        // scrollToBottom()
+        scrollToBottom();
         break;
       default:
         break;
@@ -477,7 +486,7 @@ const Room = () => {
     Object.keys(dataChannels).map((peer_id) => dataChannels[peer_id].send(JSON.stringify(dataMessage)));
   };
 
-  const updateUserData = (key, value) => {
+  const updateUserData = (key: string, value: any) => {
     sendDataMessage(key, value);
 
     switch (key) {
@@ -512,7 +521,7 @@ const Room = () => {
         updateUserData("videoEnabled", true);
 
         for (let peer_id in peers) {
-          const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
+          const sender = peers[peer_id].getSenders().find((s: any) => (s.track ? s.track.kind === "video" : false));
           sender.replaceTrack(camStream.getVideoTracks()[0]);
         }
         camStream.getVideoTracks()[0].enabled = true;
@@ -543,7 +552,7 @@ const Room = () => {
         updateUserData("audioEnabled", true);
 
         for (let peer_id in peers) {
-          const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "audio" : false));
+          const sender = peers[peer_id].getSenders().find((s: any) => (s.track ? s.track.kind === "audio" : false));
           sender.replaceTrack(micStream.getAudioTracks()[0]);
         }
         micStream.getAudioTracks()[0].enabled = true;
@@ -572,8 +581,7 @@ const Room = () => {
       {state.showSettings && (
         <div id="settings">
           <div id="name" className="label">
-            <span>Name: </span>
-            <input type="text" placeholder="请输入名称" defaultValue={App.name} />
+            <span>Name: {props.name}</span>
           </div>
           <hr className="separator" />
 
@@ -610,8 +618,6 @@ const Room = () => {
           })}
 
           <hr className="separator" />
-
-          <hr className="separator" />
           <div className="link" onClick={toggleSelfVideoMirror}>
             正常/反转
             <small className="light">(自己)</small>
@@ -619,7 +625,52 @@ const Room = () => {
         </div>
       )}
 
-      {!state.callInitiated && (
+      {state.showChat && (
+        <>
+          <div id="chatWrap">
+            <div id="chats" ref={chatsRef}>
+              {state.chats.map((item: any, index) => {
+                return (
+                  <div key={index}>
+                    <div className="chat">
+                      <span className="name">{item.name}</span>
+                      <span className="date light"> &middot; {formatDate(item.date)}</span>
+                      <div className="message">{item.message}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {state.chats.length === 0 && (
+              <div id="noChat" className="light">
+                <small>暂无聊天信息</small>
+              </div>
+            )}
+            <div id="composeBox">
+              <Input
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (!state.typing.length) return;
+                    sendDataMessage("chat", state.typing);
+                    setState({
+                      typing: "",
+                    });
+                  }
+                }}
+                value={state.typing}
+                onInput={(e) => {
+                  setState({
+                    typing: (e.target as any).value,
+                  });
+                }}
+                placeholder="输入消息"
+              ></Input>
+            </div>
+          </div>
+        </>
+      )}
+
+      {App.callInitiated && (
         <div id="actionsWrap">
           <div id="actions">
             <button className={`icon-mic${state.audioEnabled ? "" : "-off"}`} onClick={audioToggle}></button>
