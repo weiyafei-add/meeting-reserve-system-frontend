@@ -5,7 +5,7 @@ import "./index.css";
 import { Input } from "antd";
 import { formatDate } from "./util";
 
-type InitiateState = typeof initiateState;
+// type InitiateState = typeof initiateState;
 
 const ICE_SERVERS = [
   { urls: "stun:stun.l.google.com:19302" },
@@ -19,80 +19,60 @@ let peers: any = {};
 let channel: any = {};
 let dataChannels: any = {};
 
-const initiateState = {
-  peerId: "",
-  roomId: "",
-  roomLink: "",
-  copyText: "",
-  userAgent: "",
-  isMobileDevice: false,
-  isTablet: false,
-  isIpad: false,
-  isDesktop: false,
-  videoDevices: [],
-  audioDevices: [],
-  audioEnabled: true,
-  videoEnabled: true,
-  screenShareEnabled: false,
-  showChat: false,
-  showSettings: false,
-  hideToolbar: true,
-  selectedAudioDeviceId: "",
-  selectedVideoDeviceId: "",
-  name: window.localStorage.name,
-  nameError: false,
-  typing: "",
-  chats: [],
-  callInitiated: false,
-  callEnded: false,
-};
-
 const attachMediaStream = (element: HTMLVideoElement, stream: MediaStream) => (element.srcObject = stream);
 
 const Room = (props: { name: string }) => {
-  const App = useRef<any>({}).current;
+  const { userAgent, isMobileDevice } = determinDevice() as any;
   const chatsRef = useRef<any>();
-  const [name, setName] = useState("AAAA");
-  const [state, setState] = useReducer((state: any, paylod: any) => ({ ...state, ...paylod }), initiateState) as [
-    InitiateState,
-    any
-  ];
+  const [state, setState] = useReducer((state: any, paylod: any) => ({ ...state, ...paylod }), {
+    peerId: "",
+    roomId: ROOM_ID,
+    roomLink: APP_URL,
+    videoDevices: [],
+    audioDevices: [],
+    audioEnabled: true,
+    videoEnabled: true,
+    screenShareEnabled: false,
+    showChat: false,
+    showSettings: false,
+    selectedAudioDeviceId: "",
+    selectedVideoDeviceId: "",
+    typing: "",
+    chats: [],
+    callInitiated: false,
+    peerName: props.name,
+  }) as [any, any];
 
   function initiateCall() {
-    determinDevice(App);
-    App.callInitiated = true;
-    App.roomId = ROOM_ID;
-    App.roomLink = `${APP_URL}/${ROOM_ID}`;
+    setState({
+      callInitiated: true,
+    });
     signalingSocket = io("http://192.168.124.5:3000");
     //   signalingSocket = io(); 连接到当前服务器
-    signalingSocket.on("connect", () => {
-      App.peerId = signalingSocket.id;
-      setState({
-        ...App,
-      });
-      console.log("peerId", App.peerId);
 
+    signalingSocket.on("connect", () => {
       const userData = {
-        peerName: name,
-        videoEnabled: App.videoEnabled,
-        audioEnabled: App.audioEnabled,
-        userAgent: App.userAgent,
-        isMobileDevice: App.isMobileDevice,
-        isTablet: App.isTablet,
-        isIpad: App.isIpad,
-        isDesktop: App.isDesktop,
+        peerId: signalingSocket.id,
+        videoEnabled: state.videoEnabled,
+        audioEnabled: state.audioEnabled,
+        userAgent: userAgent,
+        peerName: props.name,
       };
+
+      setState({
+        ...userData,
+      });
 
       if (localMediaStream) {
         joinChatChannel(ROOM_ID, userData);
       } else {
         setupLocalMedia(function () {
           joinChatChannel(ROOM_ID, userData);
-        });
+        }, userData);
       }
     });
 
-    const setupLocalMedia = (callback: () => void) => {
+    const setupLocalMedia = (callback: () => void, userData: any) => {
       if (localMediaStream !== null) {
         if (callback) callback();
         return;
@@ -104,7 +84,7 @@ const Room = (props: { name: string }) => {
         })
         .then((stream) => {
           localMediaStream = stream;
-          const localMedia = getVideoElement(App.peerId, true);
+          const localMedia = getVideoElement(userData.peerId, true);
           attachMediaStream(localMedia, stream);
           resizeVideos();
           if (callback) {
@@ -170,7 +150,7 @@ const Room = (props: { name: string }) => {
         }
       });
 
-      const videoAvatarImgSize = App.isMobileDevice ? "100px" : "200px";
+      const videoAvatarImgSize = isMobileDevice ? "100px" : "200px";
       const videoAvatarImg = document.createElement("img");
       videoAvatarImg.setAttribute("id", peerId + "_videoEnabled");
       videoAvatarImg.setAttribute("src", "/videoOff.png");
@@ -202,6 +182,7 @@ const Room = (props: { name: string }) => {
     });
 
     signalingSocket.on("addPeer", function (config) {
+      console.log(config);
       const peer_id = config.peer_id;
       if (peer_id in peers) return;
 
@@ -221,10 +202,10 @@ const Room = (props: { name: string }) => {
         }
       };
 
-      (peerConnection as any).onaddstream = function (event) {
-        // if (!channel[peer_id]["userData"]["userAgent"]) {
-        //   return;
-        // }
+      (peerConnection as any).onaddstream = function (event: any) {
+        if (!channel[peer_id]["userData"]) {
+          return;
+        }
 
         const remoteMedia = getVideoElement(peer_id);
         peerMediaElements[peer_id] = remoteMedia;
@@ -406,7 +387,7 @@ const Room = (props: { name: string }) => {
         updateUserData("videoEnabled", true);
 
         for (let peer_id in peers) {
-          const sender = peers[peer_id].getSenders().find((s) => (s.track ? s.track.kind === "video" : false));
+          const sender = peers[peer_id].getSenders().find((s: any) => (s.track ? s.track.kind === "video" : false));
           sender.replaceTrack(screenStream.getVideoTracks()[0]);
         }
         screenStream.getVideoTracks()[0].enabled = true;
@@ -418,11 +399,6 @@ const Room = (props: { name: string }) => {
         screenStream.getVideoTracks()[0].onended = function () {
           if (state.screenShareEnabled) screenShareToggle();
         };
-        try {
-          if (cabin) {
-            cabin.event("screen-share-" + App.screenShareEnabled);
-          }
-        } catch (e) {}
       })
       .catch((e) => {
         alert("Unable to share screen. Please use a supported browser.");
@@ -435,7 +411,6 @@ const Room = (props: { name: string }) => {
       case "chat":
         setState({
           showChat: true,
-          hideToolbar: false,
           chats: [...state.chats, dataMessage],
         });
         scrollToBottom();
@@ -488,7 +463,6 @@ const Room = (props: { name: string }) => {
 
   const updateUserData = (key: string, value: any) => {
     sendDataMessage(key, value);
-
     switch (key) {
       case "audioEnabled":
         document.getElementById(state.peerId + "_audioEnabled")!.className =
@@ -629,7 +603,7 @@ const Room = (props: { name: string }) => {
         <>
           <div id="chatWrap">
             <div id="chats" ref={chatsRef}>
-              {state.chats.map((item: any, index) => {
+              {state.chats.map((item: any, index: number) => {
                 return (
                   <div key={index}>
                     <div className="chat">
@@ -670,7 +644,7 @@ const Room = (props: { name: string }) => {
         </>
       )}
 
-      {App.callInitiated && (
+      {state.callInitiated && (
         <div id="actionsWrap">
           <div id="actions">
             <button className={`icon-mic${state.audioEnabled ? "" : "-off"}`} onClick={audioToggle}></button>
@@ -683,7 +657,7 @@ const Room = (props: { name: string }) => {
                 });
               }}
             ></button>
-            {!state.isMobileDevice && (
+            {!isMobileDevice && (
               <button
                 className={`icon-monitor ${state.screenShareEnabled ? "active" : ""}`}
                 onClick={screenShareToggle}
