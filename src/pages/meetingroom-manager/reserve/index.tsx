@@ -1,94 +1,53 @@
-import { useEffect, useState } from "react";
-import { getMyBookingList, cancelBookingRoom } from "../api";
-import { Avatar, Card, Col, Row, Modal, message, Empty } from "antd";
+import React, { useEffect, useState } from "react";
+import { Badge, Calendar } from "antd";
+import styles from "./index.module.less";
+import { getBookingHistory } from "../api";
 import dayjs from "dayjs";
+import { TeamOutlined } from "@ant-design/icons";
+import type { Dayjs } from "dayjs";
+import type { BadgeProps, CalendarProps } from "antd";
 
-const { Meta } = Card;
-
-const Index = () => {
-  const [myBookingList, setMyBookingList] = useState([]);
+const App: React.FC = () => {
+  const [historyList, setHistoryList] = useState([]);
 
   useEffect(() => {
-    getMyBookingList().then((res) => {
-      const { userBooking } = res.data;
-      setMyBookingList(userBooking);
+    getBookingHistory().then((res) => {
+      setHistoryList(res.data.history || []);
     });
   }, []);
 
-  const renderBookingList = () => {
-    return myBookingList.map((item: any) => {
-      const duration = dayjs(item.endTime).diff(dayjs(item.startTime));
-      const hours = Math.floor(duration / 3600000);
-      const minutes = Math.floor((duration % 3600000) / 60000);
-      const seconds = Math.floor((duration % 60000) / 1000);
-      return (
-        <Col span={8} key={item.id}>
-          <Card
-            style={{ width: 400 }}
-            cover={<img alt="example" src="/images/meeting-room.jpg" />}
-            actions={[
-              <span style={{ color: "#212121" }}>{item.status}</span>,
-              <div style={{ color: "#212121" }}>
-                <span>{hours}小时</span>
-                <span>{minutes}分钟</span>
-                <span>{seconds}秒</span>
-              </div>,
-              <span
-                style={{ color: "red" }}
-                onClick={() => {
-                  Modal.confirm({
-                    title: "确定取消预定当前会议室吗？",
-                    onOk: async () => {
-                      await cancelBookingRoom({
-                        id: item.id,
-                      });
-                      message.success("取消预定成功");
-                      getMyBookingList().then((res) => {
-                        const { userBooking } = res.data;
-                        setMyBookingList(userBooking);
-                      });
-                    },
-                    onCancel: () => {},
-                    okButtonProps: {
-                      danger: true,
-                    },
-                  });
-                }}
-              >
-                取消预定
-              </span>,
-            ]}
-            hoverable
-          >
-            <Meta
-              avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />}
-              title={
-                <div style={{ display: "flex", gap: "20px" }}>
-                  <div>{item.room.name}</div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <span>开始时间：{dayjs(item.startTime).format("YYYY-MM-DD HH:mm:ss")}</span>
-                    <span>结束时间：{dayjs(item.endTime).format("YYYY-MM-DD HH:mm:ss")}</span>
-                  </div>
-                </div>
-              }
-              description={
-                <div>
-                  <span>{item.room.location}</span>/<span>{item.room.equipment}</span>
-                </div>
-              }
-            />
-          </Card>
-        </Col>
-      );
+  const dateCellRender = (value: Dayjs) => {
+    const listData = historyList.filter((item: any) => {
+      return dayjs(item.createTime).date() === value.date();
     });
+
+    return (
+      <div className="events">
+        {listData.map((item: any, index) => (
+          <div key={index}>
+            <span>
+              <TeamOutlined />
+            </span>
+            <span>{item.room.name}</span>
+            <span>{dayjs(item.room.createTime).format("YYYY-MM-DD")}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const cellRender: CalendarProps<Dayjs>["cellRender"] = (current, info) => {
+    if (info.type === "date") return dateCellRender(current);
+    return info.originNode;
   };
 
   return (
-    <div>
-      {myBookingList.length === 0 && <Empty description="还没有预定的会议室哦" style={{ marginTop: "20%" }}></Empty>}
-      <Row gutter={16}>{renderBookingList()}</Row>
+    <div className={styles.myMeeting}>
+      <div>
+        <Calendar cellRender={cellRender} />
+      </div>
     </div>
   );
 };
 
-export default Index;
+export default App;

@@ -59,3 +59,10 @@ export function cancelBookingRoom(data: { id: number }) {
     method: "POST",
   });
 }
+
+// 预定历史
+export function getBookingHistory() {
+  return request({
+    url: "/booking/history",
+  });
+}
