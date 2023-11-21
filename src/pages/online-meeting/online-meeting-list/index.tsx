@@ -15,6 +15,62 @@ const Index = () => {
     });
   }, []);
 
+  const handleIntoRoom = () => {};
+
+  const renderCardTitle = (item: any) => {
+    const { startTime } = item;
+    if (dayjs(startTime).diff(dayjs(), "minutes") < 0) {
+      return (
+        <div style={{ display: "flex", gap: "20px", height: 60 }} onClick={handleIntoRoom}>
+          <div>{item.room.name}</div>
+          <div style={{ color: "red" }}>会议进行中，点击进入会议室</div>
+        </div>
+      );
+    }
+    return (
+      <div style={{ display: "flex", gap: "20px", height: 60 }}>
+        <div>{item.room.name}</div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <span>开始时间：{dayjs(item.startTime).format("YYYY-MM-DD HH:mm:ss")}</span>
+          <span>结束时间：{dayjs(item.endTime).format("YYYY-MM-DD HH:mm:ss")}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const renderCancelBtn = (item: any) => {
+    const { startTime } = item;
+    if (dayjs(startTime).diff(dayjs(), "minutes") < 0) {
+      return <div>会议已开始</div>;
+    }
+    return (
+      <span
+        style={{ color: "red" }}
+        onClick={() => {
+          Modal.confirm({
+            title: "确定取消预定当前会议室吗？",
+            onOk: async () => {
+              await cancelBookingRoom({
+                id: item.id,
+              });
+              message.success("取消预定成功");
+              getMyBookingList().then((res) => {
+                const { userBooking } = res.data;
+                setMyBookingList(userBooking);
+              });
+            },
+            onCancel: () => {},
+            okButtonProps: {
+              danger: true,
+            },
+          });
+        }}
+      >
+        取消预定
+      </span>
+    );
+  };
+
   const renderBookingList = () => {
     return myBookingList.map((item: any) => {
       const duration = dayjs(item.endTime).diff(dayjs(item.startTime));
@@ -22,7 +78,7 @@ const Index = () => {
       const minutes = Math.floor((duration % 3600000) / 60000);
       const seconds = Math.floor((duration % 60000) / 1000);
       return (
-        <Col span={8} key={item.id}>
+        <Col span={7} key={item.id}>
           <Card
             style={{ width: 400 }}
             cover={<img alt="example" src="/images/meeting-room.jpg" />}
@@ -33,44 +89,13 @@ const Index = () => {
                 <span>{minutes}分钟</span>
                 <span>{seconds}秒</span>
               </div>,
-              <span
-                style={{ color: "red" }}
-                onClick={() => {
-                  Modal.confirm({
-                    title: "确定取消预定当前会议室吗？",
-                    onOk: async () => {
-                      await cancelBookingRoom({
-                        id: item.id,
-                      });
-                      message.success("取消预定成功");
-                      getMyBookingList().then((res) => {
-                        const { userBooking } = res.data;
-                        setMyBookingList(userBooking);
-                      });
-                    },
-                    onCancel: () => {},
-                    okButtonProps: {
-                      danger: true,
-                    },
-                  });
-                }}
-              >
-                取消预定
-              </span>,
+              renderCancelBtn(item),
             ]}
             hoverable
           >
             <Meta
               avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />}
-              title={
-                <div style={{ display: "flex", gap: "20px" }}>
-                  <div>{item.room.name}</div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <span>开始时间：{dayjs(item.startTime).format("YYYY-MM-DD HH:mm:ss")}</span>
-                    <span>结束时间：{dayjs(item.endTime).format("YYYY-MM-DD HH:mm:ss")}</span>
-                  </div>
-                </div>
-              }
+              title={renderCardTitle(item)}
               description={
                 <div>
                   <span>{item.room.location}</span>/<span>{item.room.equipment}</span>
