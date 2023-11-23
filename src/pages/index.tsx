@@ -1,6 +1,21 @@
-import { useEffect } from "react";
-import styles from "./index.module.less";
+import "./index.css";
 
 export default function HomePage() {
-  return <div className={styles.home}>welcome</div>;
+  const renderGreet = () => {
+    return (
+      <div className="hero">
+        <h1 className="text-reveal">
+          <span>在线会议综合管理系统</span>
+          <span>在线会议综合管理系统</span>
+        </h1>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      {renderGreet()}
+      <div className="index-image"></div>
+    </div>
+  );
 }
