@@ -4,6 +4,7 @@ import { determinDevice, APP_URL, ROOM_ID } from "@/utils/webRtc";
 import "./index.css";
 import { Input } from "antd";
 import { formatDate } from "./util";
+import { RoomInfoRef } from "./create-online-meeting";
 
 // type InitiateState = typeof initiateState;
 
@@ -21,7 +22,7 @@ let dataChannels: any = {};
 
 const attachMediaStream = (element: HTMLVideoElement, stream: MediaStream) => (element.srcObject = stream);
 
-const Room = (props: { name: string }) => {
+const Room = (props: { name: string | undefined; roomInfo: RoomInfoRef; exitRoom: Function }) => {
   const { userAgent, isMobileDevice } = determinDevice() as any;
   const chatsRef = useRef<any>();
   const [state, setState] = useReducer((state: any, paylod: any) => ({ ...state, ...paylod }), {
@@ -47,7 +48,7 @@ const Room = (props: { name: string }) => {
     setState({
       callInitiated: true,
     });
-    signalingSocket = io("http://192.168.124.5:3000");
+    signalingSocket = io(APP_URL);
     //   signalingSocket = io(); 连接到当前服务器
 
     signalingSocket.on("connect", () => {
@@ -79,7 +80,7 @@ const Room = (props: { name: string }) => {
       }
       navigator.mediaDevices
         .getUserMedia({
-          audio: true,
+          audio: false,
           video: true,
         })
         .then((stream) => {
@@ -97,7 +98,8 @@ const Room = (props: { name: string }) => {
             });
           });
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err);
           alert("会议室需要视频和麦克风授权才可以用哦");
         });
     };
@@ -549,6 +551,8 @@ const Room = (props: { name: string }) => {
 
   return (
     <div>
+      <h2>会议主题：{props.roomInfo.meetingSubject}</h2>
+      <h2>会议名称：{props.roomInfo.roomName}</h2>
       <section id="blanket"></section>
       <section id="videos"></section>
 
@@ -666,10 +670,16 @@ const Room = (props: { name: string }) => {
             <button
               className="icon-exit"
               onClick={() => {
+                localMediaStream.getTracks().forEach((track: any) => {
+                  track.stop();
+                });
                 signalingSocket.close();
                 for (let peer_id in peers) {
                   peers[peer_id].close();
                 }
+                setTimeout(() => {
+                  props.exitRoom();
+                }, 500);
               }}
             ></button>
             <button

@@ -2,7 +2,7 @@ export const routes = [
   {
     path: "/",
     routes: [
-      { path: "/", name: "欢迎", component: "index" },
+      { path: "/", name: "Welcome", component: "index" },
       { path: "/login", component: "@/pages/Login" },
       {
         path: "/meetingroom-manager",

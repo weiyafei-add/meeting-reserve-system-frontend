@@ -87,8 +87,8 @@ const LoginComponent = () => {
         localStorage.setItem("refreshToken", data.refreshToken);
         message.success("登录成功");
         history.push("/");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        message.error(error.data.message);
       }
 
       return;
@@ -135,10 +135,10 @@ const LoginComponent = () => {
               if (res.data.status === "scan-confirm") {
                 setCurrentUser(res.data.userInfo.username);
                 console.log(res);
-                // setTimeout(() => {
-                //   clearInterval(interval);
-                //   // history.push("/");
-                // }, 1000);
+                setTimeout(() => {
+                  clearInterval(interval);
+                  history.push("/");
+                }, 1000);
               }
             }, 2000);
           }}

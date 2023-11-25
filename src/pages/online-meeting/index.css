@@ -272,7 +272,7 @@ input {
   background: var(--settings-bg);
   color: var(--settings-cl);
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.16), 0px 1px 4px rgba(0, 0, 0, 0.16);
-  position: fixed;
+  position: absolute;
   bottom: 5rem;
   left: 0px;
   right: 0px;
@@ -322,7 +322,7 @@ input {
   flex: 1;
 }
 #actionsWrap {
-  position: fixed;
+  position: absolute;
   bottom: 1rem;
   left: 0px;
   right: 0px;

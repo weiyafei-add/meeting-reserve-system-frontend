@@ -9,6 +9,7 @@ import Login from "../pages/Login/index-sparex";
 import Toggle from "./toggleTheme";
 import styles from "./index.modules.less";
 import io from "socket.io-client";
+import { getUserInfo } from "@/pages/profile/api";
 
 export default () => {
   const location = useLocation();
@@ -23,12 +24,17 @@ export default () => {
   });
 
   const [pathname, setPathname] = useState<any>(useLocation().pathname || "/");
-  const [num, setNum] = useState(40);
+  const [userInfo, setUserInfo] = useState<any>({});
   if (typeof document === "undefined") {
     return <div />;
   }
 
   useEffect(() => {
+    getUserInfo().then((res) => {
+      setUserInfo(res.data);
+      sessionStorage.setItem("userInfo", JSON.stringify(res.data));
+    });
+
     const client = io("http://localhost:3636");
 
     client.on("connect", () => {
@@ -77,7 +83,7 @@ export default () => {
             avatarProps={{
               src: "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
               size: "small",
-              title: "妮妮",
+              title: userInfo.nickName,
               render: (props, dom) => {
                 return (
                   <Dropdown
@@ -116,7 +122,7 @@ export default () => {
               ];
             }}
             headerTitleRender={(logo, title, _) => {
-              return <h1 className={styles.logo_text}>企业会议综合管理系统</h1>;
+              return <h1 className={styles.logo_text}>欢迎使用</h1>;
             }}
             menuItemRender={(menuItemProps, defaultDom) => {
               if (menuItemProps.isUrl || !menuItemProps.path) {

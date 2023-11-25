@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getMyBookingList, cancelBookingRoom } from "../../meetingroom-manager/api";
 import { Avatar, Card, Col, Row, Modal, message, Empty } from "antd";
 import dayjs from "dayjs";
+import Room from "..";
 
 const { Meta } = Card;
 
@@ -107,11 +108,12 @@ const Index = () => {
       );
     });
   };
-
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo") as any);
   return (
     <div>
       {myBookingList.length === 0 && <Empty description="还没有预定的会议室哦" style={{ marginTop: "20%" }}></Empty>}
       <Row gutter={16}>{renderBookingList()}</Row>
+      <Room name={userInfo.nickName} />
     </div>
   );
 };
