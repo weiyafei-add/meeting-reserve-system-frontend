@@ -12,11 +12,17 @@ h1 {
   font-size: 5vw;
 }
 
+.logo_text {
+  background: linear-gradient(to bottom, #32dc8a, #105f39);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .text-reveal {
   --animation-duration: 2s;
 
   --1-fill-color: transparent;
-  --1-stroke-color: hotpink;
+  --1-stroke-color: rgb(105, 255, 135);
   --1-stroke-size: 1px;
 
   --2-fill-color: hotpink;
@@ -52,6 +58,9 @@ h1 {
     mask-composite: var(--mask-composite);
 
     &:nth-child(1) {
+      background: linear-gradient(to bottom, #32dc8a, #105f39);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       -webkit-text-stroke: var(--1-stroke-size) var(--1-stroke-color);
       --color: var(--1-fill-color);
       --mask-image: linear-gradient(black 0 0), linear-gradient(black 0 0);
@@ -60,6 +69,9 @@ h1 {
       --animation-name: text-reveal-1;
     }
     &:nth-child(2) {
+      background: linear-gradient(to bottom, #32dc8a, #105f39);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       -webkit-text-stroke: var(--2-stroke-size) var(--2-stroke-color);
       --color: var(--2-fill-color);
       --mask-image: linear-gradient(black 0 0);

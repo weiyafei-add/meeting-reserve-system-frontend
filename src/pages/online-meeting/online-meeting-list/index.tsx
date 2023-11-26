@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { getMyBookingList, cancelBookingRoom } from "../../meetingroom-manager/api";
-import { Avatar, Card, Col, Row, Modal, message, Empty } from "antd";
+import { Avatar, Card, Col, Row, Modal, message, Empty, Form, DatePicker } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import Room from "../index";
 
 const { Meta } = Card;
+const { RangePicker } = DatePicker;
 
 const Index = () => {
   const [myBookingList, setMyBookingList] = useState([]);
+  const [editBookingInfo, setEditBookingInfo] = useState<any>({});
+  const [form] = Form.useForm();
 
   useEffect(() => {
     getMyBookingList().then((res) => {
@@ -79,12 +83,24 @@ const Index = () => {
       const minutes = Math.floor((duration % 3600000) / 60000);
       const seconds = Math.floor((duration % 60000) / 1000);
       return (
-        <Col span={7} key={item.id}>
+        <Col span={12} key={item.id}>
           <Card
             style={{ width: 400 }}
             cover={<img alt="example" src="/images/meeting-room.jpg" />}
             actions={[
-              <span style={{ color: "#212121" }}>{item.status}</span>,
+              <EditOutlined
+                onClick={() => {
+                  const { startTime } = item;
+                  if (dayjs(startTime).diff(dayjs(), "minutes") < 0) {
+                    message.info("会议已开始，不能编辑");
+                    return;
+                  }
+                  setEditBookingInfo(item);
+                  form.setFieldsValue({
+                    startTime: [dayjs(item.startTime), dayjs(item.endTime)],
+                  });
+                }}
+              />,
               <div style={{ color: "#212121" }}>
                 <span>{hours}小时</span>
                 <span>{minutes}分钟</span>
@@ -114,6 +130,21 @@ const Index = () => {
       {myBookingList.length === 0 && <Empty description="还没有预定的会议室哦" style={{ marginTop: "20%" }}></Empty>}
       <Row gutter={16}>{renderBookingList()}</Row>
       {/* <Room name={userInfo.nickName} /> */}
+
+      <Modal
+        open={editBookingInfo.id}
+        onCancel={() => {
+          setEditBookingInfo({});
+        }}
+        onOk={() => {}}
+        title="修改会议信息"
+      >
+        <Form form={form}>
+          <Form.Item label="会议时间" name={"startTime"}>
+            <RangePicker showTime />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

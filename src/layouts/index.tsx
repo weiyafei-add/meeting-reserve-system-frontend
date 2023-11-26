@@ -122,7 +122,7 @@ export default () => {
               ];
             }}
             headerTitleRender={(logo, title, _) => {
-              return <h1 className={styles.logo_text}>欢迎使用</h1>;
+              return <h1>欢迎使用</h1>;
             }}
             menuItemRender={(menuItemProps, defaultDom) => {
               if (menuItemProps.isUrl || !menuItemProps.path) {

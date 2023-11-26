@@ -1,6 +1,6 @@
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { ProTable } from "@ant-design/pro-components";
-import { Button, Tag, message, Modal, Form, DatePicker } from "antd";
+import { Button, Tag, message, Modal, Form, DatePicker, Select } from "antd";
 import { useRef, useState } from "react";
 import { getRoomList, createRoom, updateRoom, deleteRoom, bookingRoom } from "../api";
 import dayjs from "dayjs";
@@ -235,9 +235,12 @@ export default () => {
           form.resetFields();
         }}
       >
-        <Form form={form}>
+        <Form form={form} labelCol={{ span: 4 }}>
           <Form.Item label="预定时长" name="bookingTime" rules={[{ required: true, message: "请选择预定时长" }]}>
             <RangePicker showTime />
+          </Form.Item>
+          <Form.Item label="参会人员">
+            <Select />
           </Form.Item>
         </Form>
       </Modal>
