@@ -208,7 +208,7 @@ input {
 
 #chatWrap {
   background: var(--chat-wrap-bg);
-  position: fixed;
+  position: relative;
   bottom: 6rem;
   left: 0px;
   right: 0px;
@@ -372,15 +372,6 @@ input {
   color: #e74c3c !important;
 }
 
-#callFeedbackWrap {
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  background: var(--blanket-color);
-  z-index: 110;
-}
 #callFeedback {
   position: absolute;
   padding: 1rem;

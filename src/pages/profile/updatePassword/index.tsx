@@ -1,9 +1,10 @@
-import React from "react";
-import { Button, Col, Form, Input, Row, message, Avatar } from "antd";
-import { LockOutlined, AntDesignOutlined } from "@ant-design/icons";
+import { Button, Col, Form, Input, Row, message, Upload } from "antd";
+import { LockOutlined, PlusOutlined } from "@ant-design/icons";
 import styles from "./index.module.less";
 import { getUpdatePasswordCaptcha, updatePassword } from "../api";
 import { history } from "umi";
+
+const userInfo = JSON.parse(sessionStorage.getItem("userInfo") as any);
 
 const Profile = () => {
   const [form] = Form.useForm();
@@ -35,6 +36,13 @@ const Profile = () => {
     });
   };
 
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>上传头像</div>
+    </div>
+  );
+
   return (
     <div className={styles.update_passwor_container}>
       <div className={styles.form}>
@@ -46,6 +54,9 @@ const Profile = () => {
           onFinish={onFinish}
           form={form}
         >
+          <Form.Item label="昵称" name={"nickName"} rules={[{ required: true, message: "请输入昵称" }]}>
+            <Input placeholder="请输入昵称" />
+          </Form.Item>
           <Form.Item label="新密码" name="password" rules={[{ required: true, message: "请输入新密码" }]}>
             <Input prefix={<LockOutlined className="site-form-item-icon" />} placeholder="新密码" />
           </Form.Item>
@@ -88,6 +99,41 @@ const Profile = () => {
             </Button>
           </Form.Item>
         </Form>
+      </div>
+      <div className={styles.line}></div>
+      <div className={styles.changeAvatar}>
+        <Upload
+          name="file"
+          listType="picture-circle"
+          className="avatar-uploader"
+          showUploadList={false}
+          action="http://localhost:3000/user/upload"
+          headers={{
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          }}
+          onChange={(info) => {
+            const { status } = info.file;
+            if (status !== "uploading") {
+              console.log(info.file);
+            }
+            if (status === "done") {
+              console.log(info.file);
+              message.success(`${info.file.name} 上传成功`);
+            } else if (status === "error") {
+              message.error(`${info.file.name} 上传失败`);
+            }
+          }}
+        >
+          {userInfo.headPic ? (
+            <img
+              src={`http://localhost:3000/${userInfo.headPic}`}
+              alt="avatar"
+              style={{ width: "100%", height: "100%", borderRadius: "50%" }}
+            />
+          ) : (
+            uploadButton
+          )}
+        </Upload>
       </div>
     </div>
   );

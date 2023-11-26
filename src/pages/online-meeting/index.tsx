@@ -48,7 +48,7 @@ const Room = (props: { name: string | undefined; roomInfo: RoomInfoRef; exitRoom
     setState({
       callInitiated: true,
     });
-    signalingSocket = io(APP_URL);
+    signalingSocket = io("http://localhost:3000");
     //   signalingSocket = io(); 连接到当前服务器
 
     signalingSocket.on("connect", () => {
@@ -80,7 +80,7 @@ const Room = (props: { name: string | undefined; roomInfo: RoomInfoRef; exitRoom
       }
       navigator.mediaDevices
         .getUserMedia({
-          audio: false,
+          audio: true,
           video: true,
         })
         .then((stream) => {

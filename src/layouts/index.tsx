@@ -81,7 +81,7 @@ export default () => {
               collapsedShowGroupTitle: true,
             }}
             avatarProps={{
-              src: "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
+              src: `http://localhost:3000/${userInfo.headPic}`,
               size: "small",
               title: userInfo.nickName,
               render: (props, dom) => {

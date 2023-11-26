@@ -53,14 +53,14 @@ export const routes = [
         routes: [
           {
             path: "/profile/updatepassword",
-            name: "密码修改",
+            name: "信息修改",
             component: "@/pages/profile/updatePassword",
           },
-          {
-            path: "/profile/updateUserinfo",
-            name: "信息修改",
-            component: "@/pages/profile/updateUserinfo",
-          },
+          // {
+          //   path: "/profile/updateUserinfo",
+          //   name: "信息修改",
+          //   component: "@/pages/profile/updateUserinfo",
+          // },
         ],
       },
       { path: "/setting", name: "系统设置", component: "@/pages/setting" },
