@@ -1,9 +1,10 @@
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { ProTable } from "@ant-design/pro-components";
 import { Button, Tag, message, Modal, Form, DatePicker, Select } from "antd";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getRoomList, createRoom, updateRoom, deleteRoom, bookingRoom } from "../api";
 import dayjs from "dayjs";
+import { getUserlist } from "@/pages/User/api";
 
 type Item = {
   id: number;
@@ -24,6 +25,16 @@ export default () => {
   const [bookRoomId, setBookRoomId] = useState<any>(0);
   const actionRef = useRef<ActionType>();
   const [tempKey, setTempKey] = useState(Math.random().toString().slice(3, 8));
+  const [userList, setUserList] = useState([]);
+
+  useEffect(() => {
+    getUserlist({
+      pageNo: 1,
+      pageSize: 100,
+    }).then((res) => {
+      setUserList(res.data.users);
+    });
+  }, []);
 
   const [form] = Form.useForm();
 
@@ -218,12 +229,14 @@ export default () => {
           await form.validateFields();
           const {
             bookingTime: [startTime, endTime],
+            attendMeetingList,
           } = form.getFieldsValue();
           const res = await bookingRoom({
             id: bookRoomId,
             startTime: dayjs(startTime).valueOf(),
             endTime: dayjs(endTime).valueOf(),
             clientId: sessionStorage.getItem("clientId") as string,
+            attendMeetingList,
           });
           message.success("预定成功");
           setBookRoomId(0);
@@ -239,8 +252,21 @@ export default () => {
           <Form.Item label="预定时长" name="bookingTime" rules={[{ required: true, message: "请选择预定时长" }]}>
             <RangePicker showTime />
           </Form.Item>
-          <Form.Item label="参会人员">
-            <Select />
+          <Form.Item
+            label="参会人员"
+            name={"attendMeetingList"}
+            rules={[{ required: true, message: "请选择参会人员" }]}
+            initialValue={[1]}
+          >
+            <Select
+              mode="multiple"
+              options={userList.map((item: any) => ({
+                label: item.username,
+                value: item.id,
+              }))}
+              allowClear
+              placeholder="请选择参会人员"
+            />
           </Form.Item>
         </Form>
       </Modal>

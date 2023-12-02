@@ -58,9 +58,9 @@ h1 {
     mask-composite: var(--mask-composite);
 
     &:nth-child(1) {
-      background: linear-gradient(to bottom, #32dc8a, #105f39);
+      /* background: linear-gradient(to bottom, #32dc8a, #105f39);
       -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-text-fill-color: transparent; */
       -webkit-text-stroke: var(--1-stroke-size) var(--1-stroke-color);
       --color: var(--1-fill-color);
       --mask-image: linear-gradient(black 0 0), linear-gradient(black 0 0);
