@@ -35,8 +35,10 @@ export default () => {
       sessionStorage.setItem("userInfo", JSON.stringify(res.data));
     });
 
-    const client = io("http://localhost:3636");
-
+    const client = io("https://116.204.21.112:8989", {
+      transports: ["websocket"],
+    });
+    
     client.on("connect", () => {
       sessionStorage.setItem("clientId", client.id);
       notification.success({
@@ -81,9 +83,9 @@ export default () => {
               collapsedShowGroupTitle: true,
             }}
             avatarProps={{
-              src: `http://localhost:3000/${userInfo.headPic}`,
+              src: `https://116.204.21.112/end/${userInfo?.headPic}`,
               size: "small",
-              title: userInfo.nickName,
+              title: userInfo?.nickName,
               render: (props, dom) => {
                 return (
                   <Dropdown

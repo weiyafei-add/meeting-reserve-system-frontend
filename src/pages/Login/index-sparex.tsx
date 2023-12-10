@@ -134,6 +134,9 @@ const LoginComponent = () => {
               setQrcodeStatus(res.data.status);
               if (res.data.status === "scan-confirm") {
                 setCurrentUser(res.data.userInfo.username);
+                localStorage.setItem("accessToken", res.data.accessToken);
+                localStorage.setItem("refreshToken", res.data.refreshToken);
+                message.success("登录成功");
                 console.log(res);
                 setTimeout(() => {
                   clearInterval(interval);

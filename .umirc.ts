@@ -5,4 +5,5 @@ export default defineConfig({
   routes: routes,
   npmClient: "yarn",
   // scripts: [{ src: "./adapter-latest.js", defer: true }],
+  devtool: 'cheap-source-map'
 });

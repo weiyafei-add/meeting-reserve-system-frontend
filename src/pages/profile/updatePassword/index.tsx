@@ -107,7 +107,7 @@ const Profile = () => {
           listType="picture-circle"
           className="avatar-uploader"
           showUploadList={false}
-          action="http://localhost:3000/user/upload"
+          action="/end/user/upload"
           headers={{
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           }}
@@ -126,7 +126,7 @@ const Profile = () => {
         >
           {userInfo.headPic ? (
             <img
-              src={`http://localhost:3000/${userInfo.headPic}`}
+              src={`https://116.204.21.112/end/${userInfo.headPic}`}
               alt="avatar"
               style={{ width: "100%", height: "100%", borderRadius: "50%" }}
             />

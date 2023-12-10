@@ -48,8 +48,10 @@ const Room = (props: { name: string | undefined; roomInfo: RoomInfoRef; exitRoom
     setState({
       callInitiated: true,
     });
-    signalingSocket = io("http://localhost:3000");
-    //   signalingSocket = io(); 连接到当前服务器
+    signalingSocket = io("https://116.204.21.112:8990", {
+      transports: ["websocket"],
+    });
+    // signalingSocket = io(); 
 
     signalingSocket.on("connect", () => {
       const userData = {

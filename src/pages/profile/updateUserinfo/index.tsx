@@ -26,7 +26,8 @@ const index = () => {
   const props: UploadProps = {
     name: "file",
     multiple: true,
-    action: "http://localhost:3000/user/upload",
+    action: "/end/user/upload",
+    method: 'POST',
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {

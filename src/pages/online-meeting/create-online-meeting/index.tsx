@@ -91,7 +91,7 @@ const Index = () => {
       {pageType === "create" && renderIntoRoomStep()}
       {pageType !== "create" && (
         <Room
-          name={userInfo.nickName}
+          name={userInfo.nickName || '临时用户'}
           roomInfo={roomInfoRef.current}
           exitRoom={() => {
             setPageType("create");

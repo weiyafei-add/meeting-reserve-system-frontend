@@ -2,7 +2,7 @@ import { message } from "antd";
 import axios, { Method } from "axios";
 import { history } from "umi";
 
-let BaseUrl = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "";
+let BaseUrl = "https://116.204.21.112/end";
 
 const axiosInstance = axios.create({
   baseURL: BaseUrl,
