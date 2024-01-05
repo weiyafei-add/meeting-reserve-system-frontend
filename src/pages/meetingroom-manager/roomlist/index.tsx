@@ -2,7 +2,7 @@ import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { ProTable } from "@ant-design/pro-components";
 import { Button, Tag, message, Modal, Form, DatePicker, Select } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { getRoomList, createRoom, updateRoom, deleteRoom, bookingRoom } from "../api";
+import { getRoomList, createRoom, updateRoom, deleteRoom, bookingRoom, freeMeeting } from "../api";
 import dayjs from "dayjs";
 import { getUserlist } from "@/pages/User/api";
 
@@ -106,6 +106,17 @@ export default () => {
               }}
             >
               编辑
+            </a>,
+            <a
+              key="free"
+              onClick={async () => {
+                console.log(record.id);
+                await freeMeeting({ id: record.id });
+                message.success("释放成功");
+                action?.reload();
+              }}
+            >
+              释放
             </a>,
           ];
         }

@@ -12,6 +12,7 @@ const Index = () => {
   const [myBookingList, setMyBookingList] = useState([]);
   const [editBookingInfo, setEditBookingInfo] = useState<any>({});
   const [form] = Form.useForm();
+  const [onLineMeetingInfo, setOnLineMeetingInfo] = useState<any>({});
 
   useEffect(() => {
     getMyBookingList().then((res) => {
@@ -20,13 +21,20 @@ const Index = () => {
     });
   }, []);
 
-  const handleIntoRoom = () => {};
+  const handleIntoRoom = (item: any) => {
+    setOnLineMeetingInfo(item.room);
+  };
 
   const renderCardTitle = (item: any) => {
     const { startTime } = item;
     if (dayjs(startTime).diff(dayjs(), "minutes") < 0) {
       return (
-        <div style={{ display: "flex", gap: "20px", height: 60 }} onClick={handleIntoRoom}>
+        <div
+          style={{ display: "flex", gap: "20px", height: 60 }}
+          onClick={() => {
+            handleIntoRoom(item);
+          }}
+        >
           <div>{item.room.name}</div>
           <div style={{ color: "red" }}>会议进行中，点击进入会议室</div>
         </div>
@@ -128,23 +136,37 @@ const Index = () => {
   return (
     <div>
       {myBookingList.length === 0 && <Empty description="还没有预定的会议室哦" style={{ marginTop: "20%" }}></Empty>}
-      <Row gutter={16}>{renderBookingList()}</Row>
-      {/* <Room name={userInfo.nickName} /> */}
 
-      <Modal
-        open={editBookingInfo.id}
-        onCancel={() => {
-          setEditBookingInfo({});
-        }}
-        onOk={() => {}}
-        title="修改会议信息"
-      >
-        <Form form={form}>
-          <Form.Item label="会议时间" name={"startTime"}>
-            <RangePicker showTime />
-          </Form.Item>
-        </Form>
-      </Modal>
+      {Object.keys(onLineMeetingInfo).length == 0 && <Row gutter={16}>{renderBookingList()}</Row>}
+      {Object.keys(onLineMeetingInfo).length == 0 && (
+        <Modal
+          open={editBookingInfo.id}
+          onCancel={() => {
+            setEditBookingInfo({});
+          }}
+          onOk={() => {}}
+          title="修改会议信息"
+        >
+          <Form form={form}>
+            <Form.Item label="会议时间" name={"startTime"}>
+              <RangePicker showTime />
+            </Form.Item>
+          </Form>
+        </Modal>
+      )}
+
+      {Object.keys(onLineMeetingInfo).length !== 0 && (
+        <Room
+          name={userInfo.nickName || "临时用户"}
+          roomInfo={{
+            meetingSubject: "test",
+            roomName: onLineMeetingInfo.name,
+          }}
+          exitRoom={() => {
+            setOnLineMeetingInfo({});
+          }}
+        />
+      )}
     </div>
   );
 };

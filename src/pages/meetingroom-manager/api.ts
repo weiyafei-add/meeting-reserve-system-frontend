@@ -7,6 +7,17 @@ export function getRoomList(params: any) {
   });
 }
 
+// 释放会议室
+
+export function freeMeeting(data: { id: number }) {
+  return request({
+    url: "/meeting-room/free",
+    method: "post",
+    data,
+  });
+}
+
+
 // 新增会议室
 export function createRoom(data: any) {
   return request({
@@ -32,7 +43,13 @@ export function deleteRoom(params: any) {
 }
 
 // 预定会议室
-export function bookingRoom(data: { id: number; startTime: number; endTime: number; clientId: string, attendMeetingList: Array<number> }) {
+export function bookingRoom(data: {
+  id: number;
+  startTime: number;
+  endTime: number;
+  clientId: string;
+  attendMeetingList: Array<number>;
+}) {
   return request({
     url: "/booking/room",
     data,
@@ -66,3 +83,4 @@ export function getBookingHistory() {
     url: "/booking/history",
   });
 }
+
