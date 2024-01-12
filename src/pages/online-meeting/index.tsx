@@ -51,7 +51,7 @@ const Room = (props: { name: string | undefined; roomInfo: RoomInfoRef; exitRoom
     signalingSocket = io("https://116.204.21.112:8990", {
       transports: ["websocket"],
     });
-    // signalingSocket = io(); 
+    // signalingSocket = io();
 
     signalingSocket.on("connect", () => {
       const userData = {
@@ -553,8 +553,12 @@ const Room = (props: { name: string | undefined; roomInfo: RoomInfoRef; exitRoom
 
   return (
     <div>
-      <h2>会议主题：{props.roomInfo.meetingSubject}</h2>
-      <h2>会议名称：{props.roomInfo.roomName}</h2>
+      {!isMobileDevice && (
+        <>
+          <h2>会议主题：{props.roomInfo.meetingSubject}</h2>
+          <h2>会议名称：{props.roomInfo.roomName}</h2>
+        </>
+      )}
       <section id="blanket"></section>
       <section id="videos"></section>
 
