@@ -182,5 +182,48 @@ Some fishermen are unlucky. Instead of catching fish, thay catch old boots and r
 
 <!-- 被动 -->
 
+be + done (be 表示被动的时间， 把 be 变成对应的各种时态， 表达主语的单复数)
+时态 + 动作
 及物动词 + 不及物动词\_介词
 Classrooms are cleand every day.
+
+He is beaten every day.
+He was beaten yesterday.
+He will be beaten tomorrow.
+He is being betean.
+He has been beaten. // 他现在已经被打了，现在完成时的被动语态。
+
+<!-- A  glass envelop -->
+
+How did Jane receice a letter from a stranger?
+
+My doughter, Jane, never dreamed of [动名词] receving a letter from a gril of her own age in Holland. Last year,
+[过去进行时]we were travelling across the Channel and Jane put a piece of paper with her name and address on it into a bottle, she [一般过去时] threw the bottle into the sea. She never thought of it again. But ten months later, she received a letter from a gril in Holland. Both grils write to each other regulalry now. However, they [现在完成时] have decided to use the post officer. Letters [一般将来时] will cost [比较级缺陷修饰] a little more, but they will certainly travel faster.
+
+<!-- Mad or not -->
+
+Why do people think the writer mad?
+
+Aeroplanes are slowly driving me mad. I live near a airport and passing planes can be heard night and day. The airport was built years age, but for some season it could not be used then. Last year it came into use. Over a hundred people must have been driven away from their house by the noise, I am one of a few people left. Sometimes I think this house will be knocked down by a passing plane. I have been offered a large num of money to go away, but I am detemined to stay here. Everybody says I must be mad and they are probably right!
+
+<!-- A new house -->
+
+Why is the new house special?
+
+I had a letter from my sister yesterday, she lives in Nigria. In her letter, she said that she will comes to English next year. Is she comes here, she will get a surprise. We are now living in a new house in the country. Work on it had begun before my sister left. The house was completed five months ago. In my letter, I told her that she could stay here with us. The house has many large rooms and there is a lovely garden. It is a very modern house, so it looks very starange to some people. It must be the only modern house in the district.
+
+I had a letter from my sister yesterday. She lives in Nigeria. In her letter, she said that she would come to England next year. If she comes, she will get a surprise. We are now living in a beautiful new house in the country. Work on it had begun before my sister left. The house was completed five months ago. In my letter, I told her that she could stay with us. The house has many large rooms and there is a lovely garden. It is a very modern house, so it looks strange to some people. It must be the only modern house in the district.
+
+<!-- It could be worse -->
+
+I entered the hotel manager's office and sat down. I had just lost $50 and I felt very setup. "I left the money in my room", I said, 'and it's not there now'. The manager was sympathetic, but he could not do nothing. 'Everyone's losing money these days', he said. He started to complain about this wicked world but was interrupted by a knock at the door. A gril came in and put an evenlop on his desk. It contained $50. 'I found this outside this gentleman's room', she said. 'Well', I said to the manager, 'there is still some honesty in this world'
+
+I entered the hotel manager's office and sat down. I had lost $50 and I felt very setup. 'I left the money in my room', I said 'and it's not there now'. The manager was sympathetic, but he could not do nothing. 'Everyone's losing money these days', he said. He started to complain about this wicke world but was interrupted by a knock at the door. A gril came in and put an evenlop on his desk. It contained $50. 'I found this outside this gentleman's room', she said. 'Well', I said to the manager. 'there is still some honesty in this world'.
+
+<!-- Do the English speak English? -->
+
+Why does the writer not understand the porter?
+
+I arrived in London at last. The railway station was big, black and dark. I did not know the way to my hotel, so I asked a porter. I not only spoke English very carefully, but very clearly as well. The porter, however, could not understand me. I repeated my question several times and at last he understood. He answered me, but he spoke English neither slowly nor clearly. 'I am a foreigner', I said. Then he spoke slowly, but I could not understand him. My English teacher never speak English like that. The porter and I smiled and looked at each other. Then he said something and I understood it. 'You will soon learn English', he said. I wonder. In England, each person speaks a different language. The English understand each other, but I don't understand them! Do they speak English?
+Why dose the writer not understand the porter?
+I arrived in London at last. The railway station was big, black and dark. I did not know the way to my hotel, so I asked a porter. I spoke English not only very carefully, but very clearly as well. But the porter could not understand me. I repeated my questions several times and at last he understood. He answered me, but he spoke English neither slowly nor clearly. "I am a foreigner". I said. Then he spoke slowly, but I could not understand him. My English teacher never speak English like that. The porter and I looked at each other and smiled. Then he said something and I understood it. 'You will soon learn English'.He said. I wonder. In England, each person speaks a different language. The English understand each other, but I do not understand them. Do they speak English?
