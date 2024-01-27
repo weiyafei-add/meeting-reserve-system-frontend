@@ -1,35 +1,27 @@
-<!--
 Last week I went to the theatre, I had a good seat, the play was very interesting. I did not enjoy it.
 A young man and a young woman were sitting behind me. They were talking loudly. I got very angry. I could not here the actors. I turned round. I looked at the young man and the young woman.
-// did 表示pay这个动词的过去式
+// did 表示 pay 这个动词的过去式
 They did not pay any attention. In the end. I could not bear it. I turned round again. "I can't hear a word!" I said angrily.
 
 "It's none of your business". The young man said rudely. "This is a private conversation!".
- -->
-
-<!--
+-->
 
 It was Sunday. I never get up early on Sundays. I sometimes stay in bed until lunch. Last Sunday. I got up very late.
 I looked out of my window. It was dark outside. 'What a day!. I thought. 'It's rainning again'. Just then, the telephone rang. It's my aunt Lucy. 'I've just arrived by train', she said. 'I am coming to see you'.
-    "But I'm still having breakfast", I said.
-    "What are you doing?". she said.
-    "I'm having breakfast". I repeated.
-    "Dear me" she said. "Do you always get up so late? It's one o'clock".
+"But I'm still having breakfast", I said.
+"What are you doing?". she said.
+"I'm having breakfast". I repeated.
+"Dear me" she said. "Do you always get up so late? It's one o'clock".
 
- -->
+-->
 
- <!-- 
- 
- I carried my bags into the hall.
+I carried my bags into the hall.
 
- "What are you dong?", my landlady asked.
- "I'm leaving", I said.
- "Why are you leaving? You have been here only a week". She asked.
+"What are you dong?", my landlady asked.
+"I'm leaving", I said.
+"Why are you leaving? You have been here only a week". She asked.
 
- "A week is too long, Mrs. Lucy". I said. "There are too many rules in the house, my friends never come to visit me, The dinner always at seven o'clock, so I frequently go to bed hungry. You don't like noise, I rarely listen to the radio. The heating doesn't work, I usually feel very cold. This is terrible place for a man like me. Goodbuy Mrs Lucy"
-
- 
-  -->
+"A week is too long, Mrs. Lucy". I said. "There are too many rules in the house, my friends never come to visit me, The dinner always at seven o'clock, so I frequently go to bed hungry. You don't like noise, I rarely listen to the radio. The heating doesn't work, I usually feel very cold. This is terrible place for a man like me. Goodbuy Mrs Lucy"
 
 An exciting Trip
 
@@ -258,25 +250,22 @@ As long as I'm with you.
 
 Richard the first is King of England. He is a brave good man and people love him. They called him Richard the Lionheart. But when the King goes away. His brother prince Jone dose his work. The people must pay more taxes. But Prince Jone, some of them can't afford. Then take their houes
 
-<!--
 特殊疑问句变宾语从句
 
- - 将特殊疑问句的动词移到主语后面
- She always tells me what a picture is about.
+- 将特殊疑问句的动词移到主语后面
+  She always tells me what a picture is about.
 
 一般疑问句（小名：Yes/No Question）变宾语从句
 
- - 将一般疑问句的动词移到主语后面
- She slways tells me whether/if my pictures are good or not.
+- 将一般疑问句的动词移到主语后面
+  She slways tells me whether/if my pictures are good or not.
 
 宾语从句的位置：
- 1. 动宾
+
+1.  动宾
     1. 动单宾
     2. 动双宾
- 2. 介宾
+2.  介宾
     1. at
 
-
-<!-- 名词后：定语从句 -->
-
--->
+名词后：定语从句
