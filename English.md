@@ -227,3 +227,56 @@ Why does the writer not understand the porter?
 I arrived in London at last. The railway station was big, black and dark. I did not know the way to my hotel, so I asked a porter. I not only spoke English very carefully, but very clearly as well. The porter, however, could not understand me. I repeated my question several times and at last he understood. He answered me, but he spoke English neither slowly nor clearly. 'I am a foreigner', I said. Then he spoke slowly, but I could not understand him. My English teacher never speak English like that. The porter and I smiled and looked at each other. Then he said something and I understood it. 'You will soon learn English', he said. I wonder. In England, each person speaks a different language. The English understand each other, but I don't understand them! Do they speak English?
 Why dose the writer not understand the porter?
 I arrived in London at last. The railway station was big, black and dark. I did not know the way to my hotel, so I asked a porter. I spoke English not only very carefully, but very clearly as well. But the porter could not understand me. I repeated my questions several times and at last he understood. He answered me, but he spoke English neither slowly nor clearly. "I am a foreigner". I said. Then he spoke slowly, but I could not understand him. My English teacher never speak English like that. The porter and I looked at each other and smiled. Then he said something and I understood it. 'You will soon learn English'.He said. I wonder. In England, each person speaks a different language. The English understand each other, but I do not understand them. Do they speak English?
+
+<!-- With you -->
+
+When the days and nights getting colder.
+And the end is a heartbeat way.
+I can feel the storm's getting closer.
+Thats when I remember what you said.
+I follow you throught the night.
+I am here by you side.
+Promise you that I'll nerve let you go.
+So follow me throught the night.
+I see fire in you eyes.
+And I know that there is nothing we can't do.
+As long as I'm with you.
+
+See the clouds they are getting darker.
+And hope is far far away.
+The whold world just keeps getting colder.
+Thats when I remember what you said.
+I follow you throught the night.
+I am here by you side.
+Promise you that I'll nerve let you go.
+So follow me throught the night.
+I see fire in you eyes.
+And I know that there is nothing we can't do.
+As long as I'm with you.
+
+<!--  -->
+
+Richard the first is King of England. He is a brave good man and people love him. They called him Richard the Lionheart. But when the King goes away. His brother prince Jone dose his work. The people must pay more taxes. But Prince Jone, some of them can't afford. Then take their houes
+
+<!--
+特殊疑问句变宾语从句
+
+ - 将特殊疑问句的动词移到主语后面
+ She always tells me what a picture is about.
+
+一般疑问句（小名：Yes/No Question）变宾语从句
+
+ - 将一般疑问句的动词移到主语后面
+ She slways tells me whether/if my pictures are good or not.
+
+宾语从句的位置：
+ 1. 动宾
+    1. 动单宾
+    2. 动双宾
+ 2. 介宾
+    1. at
+
+
+<!-- 名词后：定语从句 -->
+
+-->
